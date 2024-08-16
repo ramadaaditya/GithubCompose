@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">GithubUserCompose</string>
+
+    <string name="name_dicoding">Muhammad Ramada Aditya</string>
+    <string name="email_dicoding">ramadaaditya100@gmail.com</string>
+    <string name="placeholder_search">Search User</string>
+    <string name="user_not_found">User Not Found</string>
+    <string name="no_favorite_users">No Favorite Users</string>
+</resources>
