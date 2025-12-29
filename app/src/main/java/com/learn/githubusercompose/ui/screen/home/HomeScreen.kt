@@ -14,23 +14,23 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices.PIXEL_6
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.learn.githubusercompose.R
-import com.learn.githubusercompose.di.Injection
+import com.learn.githubusercompose.model.FakeUserDataSource
 import com.learn.githubusercompose.model.User
-import com.learn.githubusercompose.ui.ViewModelFactory
 import com.learn.githubusercompose.ui.common.UiState
 import com.learn.githubusercompose.ui.components.ErrorScreen
 import com.learn.githubusercompose.ui.components.Search
 import com.learn.githubusercompose.ui.components.UserItem
+import com.learn.githubusercompose.ui.theme.GithubUserComposeTheme
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel(
-        factory = ViewModelFactory(Injection.provideRepository())
-    ),
+    viewModel: HomeViewModel = hiltViewModel(),
     navigateToDetail: (Long) -> Unit
 ) {
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
@@ -98,5 +98,19 @@ fun HomeContent(
                 }
             }
         }
+    }
+}
+
+
+@Preview(showBackground = true, device = PIXEL_6)
+@Composable
+private fun HomeScreenPreview() {
+    GithubUserComposeTheme() {
+        val dummyUser = FakeUserDataSource.dummyUser
+        HomeContent(
+            user = dummyUser,
+            navigateToDetail = {},
+            onSearch = { },
+        )
     }
 }

@@ -4,9 +4,11 @@ import com.learn.githubusercompose.model.FakeUserDataSource
 import com.learn.githubusercompose.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class UserRepository private constructor(
-) {
+@Singleton
+class UserRepository @Inject constructor() {
     private val users = mutableListOf<User>()
 
     init {
@@ -23,17 +25,5 @@ class UserRepository private constructor(
 
     fun searchUsers(query: String): List<User> = users.filter {
         it.login.contains(query, ignoreCase = true)
-    }
-
-    companion object {
-        @Volatile
-        private var instance: UserRepository? = null
-
-        fun getInstance(): UserRepository =
-            instance ?: synchronized(this) {
-                UserRepository().apply {
-                    instance = this
-                }
-            }
     }
 }

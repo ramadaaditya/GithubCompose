@@ -5,11 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.learn.githubusercompose.data.UserRepository
 import com.learn.githubusercompose.model.User
 import com.learn.githubusercompose.ui.common.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val repository: UserRepository
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState<List<User>>> = MutableStateFlow(UiState.Loading)

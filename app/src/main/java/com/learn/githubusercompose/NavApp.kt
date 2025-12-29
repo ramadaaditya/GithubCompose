@@ -21,7 +21,7 @@ import com.learn.githubusercompose.ui.screen.profile.ProfileScreen
 import com.learn.githubusercompose.ui.theme.GithubUserComposeTheme
 
 @Composable
-fun GithubUserComposeApp(
+fun GithubNavApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
@@ -63,13 +63,5 @@ fun GithubUserComposeApp(
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GithubUserComposeAppPreview() {
-    GithubUserComposeTheme {
-        GithubUserComposeApp()
     }
 }

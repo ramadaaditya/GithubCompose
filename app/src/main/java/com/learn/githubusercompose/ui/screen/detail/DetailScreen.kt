@@ -32,10 +32,8 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.learn.githubusercompose.R
-import com.learn.githubusercompose.di.Injection
-import com.learn.githubusercompose.ui.ViewModelFactory
 import com.learn.githubusercompose.ui.common.UiState
 import com.learn.githubusercompose.ui.components.FollowerFollowingTabLayout
 import com.learn.githubusercompose.ui.theme.GithubUserComposeTheme
@@ -43,11 +41,7 @@ import com.learn.githubusercompose.ui.theme.GithubUserComposeTheme
 @Composable
 fun DetailScreen(
     userId: Long,
-    viewModel: DetailViewModel = viewModel(
-        factory = ViewModelFactory(
-            Injection.provideRepository()
-        )
-    ),
+    viewModel: DetailViewModel = hiltViewModel(),
     navigateBack: () -> Unit,
 ) {
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
