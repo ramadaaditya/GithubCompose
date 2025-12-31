@@ -1,4 +1,4 @@
-package com.learn.githubusercompose.model
+package com.learn.githubusercompose.domain.model
 
 data class User(
     val id: Long,

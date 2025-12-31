@@ -1,6 +1,6 @@
 [versions]
-agp = "8.5.2"
-kotlin = "2.0.0"
+agp = "8.13.1"
+kotlin = "2.2.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -12,10 +12,11 @@ lifecycleViewmodelCompose = "2.8.4"
 navigationRuntimeKtx = "2.7.7"
 navigationCompose = "2.7.7"
 material = "1.12.0"
-ksp_ver = "2.0.0-1.0.21"
+ksp_ver = "2.2.0-2.0.2"
 roomCompiler = "2.6.1"
 roomKtx = "2.6.1"
 roomRuntime = "2.6.1"
+roomPaging = "2.8.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +40,7 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomPaging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

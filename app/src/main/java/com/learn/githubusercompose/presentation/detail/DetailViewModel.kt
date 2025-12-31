@@ -1,9 +1,9 @@
-package com.learn.githubusercompose.ui.screen.detail
+package com.learn.githubusercompose.presentation.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.learn.githubusercompose.data.UserRepository
-import com.learn.githubusercompose.model.User
+import com.learn.githubusercompose.domain.model.User
 import com.learn.githubusercompose.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,9 +21,9 @@ class DetailViewModel @Inject constructor(
         get() = _uiState
 
     fun getUserById(userId: Long) {
-        viewModelScope.launch {
-            _uiState.value = UiState.Loading
-            _uiState.value = UiState.Success(repository.getUserById(userId))
-        }
+//        viewModelScope.launch {
+//            _uiState.value = UiState.Loading
+//            _uiState.value = UiState.Success(repository.getUserById(userId))
+//        }
     }
 }

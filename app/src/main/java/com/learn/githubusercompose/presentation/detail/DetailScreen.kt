@@ -1,4 +1,4 @@
-package com.learn.githubusercompose.ui.screen.detail
+package com.learn.githubusercompose.presentation.detail
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi

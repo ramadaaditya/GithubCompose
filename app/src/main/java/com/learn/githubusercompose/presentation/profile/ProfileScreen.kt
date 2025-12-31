@@ -1,4 +1,4 @@
-package com.learn.githubusercompose.ui.screen.profile
+package com.learn.githubusercompose.presentation.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column

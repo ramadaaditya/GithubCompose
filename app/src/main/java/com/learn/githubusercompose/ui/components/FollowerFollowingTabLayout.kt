@@ -22,8 +22,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.learn.githubusercompose.model.FakeUserDataSource
-import com.learn.githubusercompose.model.User
+import com.learn.githubusercompose.domain.model.FakeUserDataSource
+import com.learn.githubusercompose.domain.model.User
 import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
@@ -85,11 +85,11 @@ fun FollowerList(
         modifier = modifier
     ) {
         items(user) { data ->
-            UserItem(
-                image = data.avatarUrl,
-                login = data.login,
-                userRepo = data.repoCount,
-            )
+//            UserItem(
+//                image = data.avatarUrl,
+//                login = data.login,
+//                userRepo = data.repoCount,
+//            )
         }
     }
 }
@@ -104,11 +104,11 @@ fun FollowingList(
         modifier = modifier
     ) {
         items(user) { data ->
-            UserItem(
-                image = data.avatarUrl,
-                login = data.login,
-                userRepo = data.repoCount,
-            )
+//            UserItem(
+//                model = data.avatarUrl,
+//                login = data.login,
+//                userRepo = data.repoCount,
+//            )
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.learn.githubusercompose.model
+package com.learn.githubusercompose.domain.model
 
 import com.learn.githubusercompose.R
 
