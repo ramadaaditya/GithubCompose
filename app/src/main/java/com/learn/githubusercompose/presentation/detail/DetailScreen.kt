@@ -52,15 +52,15 @@ fun DetailScreen(
 
             is UiState.Success -> {
                 val data = uiState.data
-                DetailContent(
-                    image = data.avatarUrl,
-                    name = data.login,
-                    bio = data.bio,
-                    follower = data.follower,
-                    following = data.following,
-                    repoCount = data.repoCount,
-                    onBackClick = navigateBack
-                )
+//                DetailContent(
+//                    image = data.avatarUrl,
+//                    name = data.login,
+//                    bio = data.bio,
+//                    follower = data.follower,
+//                    following = data.following,
+//                    repoCount = data.repoCount,
+//                    onBackClick = navigateBack
+//                )
             }
 
             is UiState.Error -> {

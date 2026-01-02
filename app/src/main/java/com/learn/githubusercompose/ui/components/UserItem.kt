@@ -30,7 +30,7 @@ import com.learn.githubusercompose.ui.theme.GithubUserComposeTheme
 @Composable
 fun UserItem(
     login: String,
-    userRepo: Int,
+    userRepo: String,
     modifier: Modifier = Modifier,
     model: String?
 ) {

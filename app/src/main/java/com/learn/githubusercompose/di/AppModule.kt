@@ -1,10 +1,15 @@
 package com.learn.githubusercompose.di
 
+import android.content.Context
+import androidx.room.Room
 import com.learn.githubusercompose.BuildConfig
+import com.learn.githubusercompose.data.local.dao.SearchUserDao
+import com.learn.githubusercompose.data.local.database.UserDatabase
 import com.learn.githubusercompose.data.remote.api.ApiServices
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -13,10 +18,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-
-/*
-Using abstract for owned class
- */
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -65,5 +66,20 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
+    }
+
+    @Provides
+    fun provideUserDAO(db: UserDatabase): SearchUserDao {
+        return db.searchDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context): UserDatabase {
+        return Room.databaseBuilder(
+            context,
+            UserDatabase::class.java,
+            "github_user.db"
+        ).build()
     }
 }
