@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.learn.githubusercompose.BuildConfig
 import com.learn.githubusercompose.data.local.dao.SearchUserDao
+import com.learn.githubusercompose.data.local.dao.TrendingRepoDao
 import com.learn.githubusercompose.data.local.database.UserDatabase
 import com.learn.githubusercompose.data.remote.api.ApiServices
 import dagger.Module
@@ -71,6 +72,11 @@ object AppModule {
     @Provides
     fun provideUserDAO(db: UserDatabase): SearchUserDao {
         return db.searchDao()
+    }
+
+    @Provides
+    fun provideTrendingRepoDAO(db: UserDatabase): TrendingRepoDao {
+        return db.trendingRepoDao()
     }
 
     @Provides

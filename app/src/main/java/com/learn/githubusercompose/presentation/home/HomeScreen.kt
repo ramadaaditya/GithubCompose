@@ -1,142 +1,379 @@
 package com.learn.githubusercompose.presentation.home
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.learn.githubusercompose.R
-import com.learn.githubusercompose.data.local.entity.UserEntity
+import coil3.compose.AsyncImage
+import com.learn.githubusercompose.core.utils.languageColor
+import com.learn.githubusercompose.domain.model.TrendingRepo
+import com.learn.githubusercompose.domain.model.UserItemUiState
+import com.learn.githubusercompose.core.common.UiState
 import com.learn.githubusercompose.ui.components.Search
-import com.learn.githubusercompose.ui.components.UserItem
+import com.learn.githubusercompose.ui.components.SearchUserItem
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
-    navigateToDetail: (Long) -> Unit
 ) {
-    val uiState by viewModel.users.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var query by rememberSaveable { mutableStateOf("") }
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Search(
+            query = query,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            onQueryChange = { newQuery ->
+                query = newQuery
+//                viewModel.searchUsers(newQuery)
+            },
+            onSearch = {
+                viewModel.searchUsers(query)
+            }
+        )
 
-//    Box(
-//        Modifier.fillMaxSize(),
-//        contentAlignment = Alignment.Center
-//    ) {
-//        when (val state = uiState) {
-//            is UiState.Error -> {
-//                Text(
-//                    text = state.errorMessage,
-//                    color = MaterialTheme.colorScheme.error,
-//                    modifier = Modifier.padding(16.dp)
-//                )
-//            }
-//
-//            is UiState.Loading -> {
-//                CircularProgressIndicator()
-//            }
-//
-//            is UiState.Success -> {
-//
-//                if (state.data.isEmpty()) {
-//                    Text("Tidak ada data ditemukan")
-//                } else {
-//                    UserListContent(
-//                        userList = state.data,
-//                        onItemClick = {}
-//                    )
-//                }
-//            }
-//        }
-//    }
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            contentAlignment = Alignment.Center,
+        ) {
+            when (val state = uiState) {
+                is UiState.Error -> {
+                    Text(
+                        text = state.errorMessage,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
 
-    HomeContent(
-        user = uiState,
-        navigateToDetail = {},
-        onSearch = {},
-        modifier = modifier
-    )
+                is UiState.Loading -> {
+                    CircularProgressIndicator()
+                }
+
+                is UiState.Success -> {
+                    HomeDashboardContent(
+                        userList = state.data.users,
+                        trendingList = state.data.trendingRepo ?: emptyList(),
+                        onItemClick = {
+//                            navigateToDetail(it.id)
+                        }
+                    )
+                }
+            }
+        }
+    }
 }
 
+
 @Composable
-fun UserListContent(
-    userList: List<UserEntity>,
+fun HomeDashboardContent(
+    trendingList: List<TrendingRepo>,
+    userList: List<UserItemUiState>,
     onItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        contentPadding = PaddingValues(16.dp),
-        modifier = modifier.fillMaxSize()
+        contentPadding = PaddingValues(bottom = 24.dp),
+        modifier = modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(
-            items = userList, key = { user ->
-                user.username
-            }) { data ->
-            UserItem(
-                model = data.avatarUrl ?: "",
-                login = data.username,
-                userRepo = data.htmlUrl ?: "",
-                modifier = Modifier.clickable {
-//                        navigateToDetail(data.id)
-                }
+        item {
+            SectionHeader(
+                title = "Trending Repositories",
+                actionText = "See All",
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
+        }
+
+        item {
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(trendingList.take(5)) { user ->
+                    TrendingRepoCard(trendingRepo = user)
+                }
+            }
+        }
+
+        if (userList.isEmpty()) {
+            item {
+                EmptyState(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 32.dp)
+                )
+            }
+        } else {
+            items(
+                items = userList, key = { user -> user.id }
+            ) { data ->
+                SearchUserItem(
+                    state = data,
+                    onItemClick = {},
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SectionHeader(
+    modifier: Modifier = Modifier,
+    title: String,
+    actionText: String? = null
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
+
+            )
+        )
+        if (actionText != null) {
+            Text(
+                text = actionText,
+                style = MaterialTheme.typography.labelMedium.copy(
+                    color = MaterialTheme.colorScheme.primary
+                ),
+//                modifier = Modifier.clickable {}
+            )
+        }
+    }
+
+}
+
+
+@Composable
+fun TrendingRepoCard(trendingRepo: TrendingRepo, modifier: Modifier = Modifier) {
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        modifier = modifier
+            .width(280.dp)
+            .height(140.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AsyncImage(
+                        model = trendingRepo.ownerAvatarUrl,
+                        contentDescription = null,
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Text(
+                    text = "${trendingRepo.ownerName}/${trendingRepo.name}",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            Text(
+                text = trendingRepo.description,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .clip(CircleShape)
+                        .background(languageColor(trendingRepo.language))
+                )
+
+                Spacer(modifier = Modifier.width(6.dp))
+
+                Text(
+                    text = trendingRepo.language,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Icon(
+                    Icons.Default.Star,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(14.dp)
+                )
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                Text(
+                    text = trendingRepo.stars.toString(),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                )
+            }
         }
     }
 }
 
 
 @Composable
-fun HomeContent(
-    user: List<UserEntity>,
-    navigateToDetail: (Long) -> Unit,
-    onSearch: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column {
-        Search(
-            modifier = Modifier.fillMaxWidth(),
-            onQueryChange = { query ->
-                onSearch(query)
-            }
-        )
-        if (user.isEmpty()) {
-            Box(
-                modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = stringResource(R.string.user_not_found))
-            }
-        } else {
-            UserListContent(
-                userList = user,
-                onItemClick = {}
+fun ActivityItem(user: UserItemUiState, modifier: Modifier = Modifier) {
+    Card(
+        shape = RoundedCornerShape(12.dp), // Radius lebih besar sesuai gambar
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+//            crossAxisAlignment = CrossAxisAlignment.Start
+        ) {
+            // Icon Aktivitas (Bulat)
+            AsyncImage(
+                model = user.avatarUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
             )
 
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = user.username,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    )
+                    Text(
+                        text = "2h ago",
+                        style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurface)
+                    )
+                }
+
+                Text(
+                    text = "starred oven-sh/bun", // Simulasi aktivitas
+                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary)
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(8.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFFD35400))
+                    ) // Rust Color
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        "Zig",
+                        style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurface)
+                    )
+                }
+            }
         }
     }
 }
 
-
-//@Preview(showBackground = true, device = PIXEL_6)
-//@Composable
-//private fun HomeScreenPreview() {
-//    GithubUserComposeTheme(darkTheme = true) {
-//        val dummyUser = FakeUserDataSource.dummyUser
-//        HomeContent(
-//            user = dummyUser,
-//            navigateToDetail = {},
-//            onSearch = { },
-//        )
-//    }
-//}
+@Composable
+fun EmptyState(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = Icons.Default.Search, // Atau icon lain yang relevan
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(48.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            "No Data Found",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}

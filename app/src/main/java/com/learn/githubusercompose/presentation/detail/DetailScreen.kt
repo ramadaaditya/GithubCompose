@@ -1,8 +1,6 @@
 package com.learn.githubusercompose.presentation.detail
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,56 +13,56 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import com.learn.githubusercompose.R
-import com.learn.githubusercompose.ui.common.UiState
+import com.learn.githubusercompose.domain.model.UserItemUiState
+import com.learn.githubusercompose.core.common.UiState
 import com.learn.githubusercompose.ui.components.FollowerFollowingTabLayout
-import com.learn.githubusercompose.ui.theme.GithubUserComposeTheme
 
 @Composable
 fun DetailScreen(
-    userId: Long,
     viewModel: DetailViewModel = hiltViewModel(),
     navigateBack: () -> Unit,
 ) {
-    viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
-        when (uiState) {
-            is UiState.Loading -> {
-                viewModel.getUserById(userId)
-            }
 
-            is UiState.Success -> {
-                val data = uiState.data
-//                DetailContent(
-//                    image = data.avatarUrl,
-//                    name = data.login,
-//                    bio = data.bio,
-//                    follower = data.follower,
-//                    following = data.following,
-//                    repoCount = data.repoCount,
-//                    onBackClick = navigateBack
-//                )
-            }
+    val detailState = viewModel.uiState.collectAsStateWithLifecycle().value
+    val followerState = viewModel.follower.collectAsStateWithLifecycle().value
+    val followingState = viewModel.following.collectAsStateWithLifecycle().value
 
-            is UiState.Error -> {
-            }
+
+    when (detailState) {
+        is UiState.Error -> {
+            Text(text = detailState.errorMessage)
+        }
+
+        UiState.Loading -> {
+            CircularProgressIndicator()
+        }
+
+        is UiState.Success -> {
+            DetailContent(
+                detailUser = detailState.data,
+                followerState = followerState,
+                followingState = followingState,
+                onBackClick = {}
+            )
         }
     }
 }
@@ -72,14 +70,11 @@ fun DetailScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DetailContent(
-    @DrawableRes image: Int,
-    name: String,
-    bio: String,
-    follower: Int,
-    following: Int,
-    repoCount: Int,
+    modifier: Modifier = Modifier,
+    detailUser: DetailUiState,
+    followerState: UiState<List<UserItemUiState>>,
+    followingState: UiState<List<UserItemUiState>>,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.fillMaxSize()
@@ -90,10 +85,11 @@ fun DetailContent(
                 .align(Alignment.CenterHorizontally)
                 .padding(16.dp, bottom = 8.dp)
         ) {
-            Image(
-                painter = painterResource(image),
+            AsyncImage(
+                model = detailUser.image,
                 contentDescription = null,
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
+                error = painterResource(R.drawable.logo),
                 modifier = Modifier
                     .padding(bottom = 8.dp)
                     .size(100.dp)
@@ -102,7 +98,7 @@ fun DetailContent(
                     .border(2.dp, Color.Gray, CircleShape)
             )
             Text(
-                text = name,
+                text = detailUser.name,
                 fontSize = 20.sp,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
@@ -110,7 +106,7 @@ fun DetailContent(
                     .padding(bottom = 8.dp)
             )
             Text(
-                text = bio,
+                text = detailUser.bio,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
             )
@@ -122,7 +118,7 @@ fun DetailContent(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = repoCount.toString(),
+                        text = detailUser.repoCount.toString(),
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
@@ -131,7 +127,7 @@ fun DetailContent(
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = follower.toString(),
+                        text = detailUser.follower.toString(),
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
@@ -140,7 +136,7 @@ fun DetailContent(
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = following.toString(),
+                        text = detailUser.following.toString(),
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
@@ -149,7 +145,10 @@ fun DetailContent(
                 }
             }
         }
-        FollowerFollowingTabLayout()
+        FollowerFollowingTabLayout(
+            followerState = followerState,
+            followingState = followerState
+        )
     }
 }
 
@@ -181,18 +180,17 @@ fun MyTopBar(
 }
 
 
-@Preview(showBackground = true, device = Devices.PIXEL_4)
-@Composable
-fun DetailScreenPreview() {
-    GithubUserComposeTheme {
-        DetailContent(
-            R.drawable.logo,
-            "Ramada Aditya",
-            "Android Developer",
-            100,
-            100,
-            20,
-            onBackClick = {}
-        )
-    }
-}
+//@Preview(showBackground = true, device = Devices.PIXEL_4)
+//@Composable
+//fun DetailScreenPreview() {
+//    GithubUserComposeTheme(dynamicColor = false) {
+//        DetailContent(
+//            name = "Ramada Aditya",
+//            bio = "This is Android Developer bio",
+//            follower = 123,
+//            following = 456,
+//            repoCount = 90,
+//            onBackClick = {},
+//        )
+//    }
+//}

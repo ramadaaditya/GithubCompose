@@ -1,6 +1,8 @@
 package com.learn.githubusercompose.core.navigation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -12,12 +14,14 @@ import com.learn.githubusercompose.presentation.detail.DetailScreen
 import com.learn.githubusercompose.presentation.home.HomeScreen
 import com.learn.githubusercompose.presentation.notification.NotificationScreen
 import com.learn.githubusercompose.presentation.profile.ProfileScreen
-import com.learn.githubusercompose.presentation.search.SearchScreen
 import com.learn.githubusercompose.ui.components.BottomBar
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
     Scaffold(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
@@ -26,24 +30,17 @@ fun AppNavHost(navController: NavHostController) {
                 startDestination = ScreenRoute.HomeRoute,
             ) {
                 composable<ScreenRoute.HomeRoute> {
-                    HomeScreen(
-                        navigateToDetail = { }
-                    )
+                    HomeScreen()
                 }
                 composable<ScreenRoute.ProfileRoute> {
                     ProfileScreen()
-                }
-                composable<ScreenRoute.SearchRoute> {
-                    SearchScreen()
                 }
                 composable<ScreenRoute.NotificationRoute> {
                     NotificationScreen()
                 }
 
                 composable<ScreenRoute.DetailUserRoute> {
-                    val id = it.arguments?.getLong("userId") ?: -1L
                     DetailScreen(
-                        userId = id,
                         navigateBack = {
                             navController.navigateUp()
                         }

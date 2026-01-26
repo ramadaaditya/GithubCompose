@@ -5,8 +5,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "users")
-data class UserEntity(
+data class SearchUserEntity(
     @PrimaryKey(autoGenerate = false)
+    val id: Int,
     @ColumnInfo(name = "username")
     val username: String,
     @ColumnInfo(name = "avatar_url")

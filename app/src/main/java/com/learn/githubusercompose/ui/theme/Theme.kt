@@ -9,13 +9,34 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
+// In your GithubUserComposeTheme.kt
+
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
-    background = DarkBackground
+    // Background colors
+    background = Color(0xFF1A1F2E),        // Main dark blue background
+    surface = Color(0xFF252D3F),           // Card/elevated surface color
+    surfaceVariant = Color(0xFF2A3346),    // Search bar, chips background
+
+    // Primary colors (for buttons, chips)
+    primary = Color(0xFF4D6EFF),           // Blue accent (Follow button, selected chip)
+    onPrimary = Color.White,               // Text on primary button
+    primaryContainer = Color(0xFF3D5ACC),  // Darker blue for pressed state
+
+    // Text colors
+    onBackground = Color.White,            // Main text color
+    onSurface = Color.White,               // Text on cards
+    onSurfaceVariant = Color(0xFF9CA3B4),  // Secondary text (username, location)
+
+    // Outline/border colors
+    outline = Color(0xFF3A4253),           // Card borders, dividers
+    outlineVariant = Color(0xFF2D3444),    // Subtle borders
+
+    // Additional colors
+    secondary = Color(0xFF6C7A94),         // Icon colors, inactive states
+    tertiary = Color(0xFF00D9FF),          // Verification badge
 )
 
 private val LightColorScheme = lightColorScheme(

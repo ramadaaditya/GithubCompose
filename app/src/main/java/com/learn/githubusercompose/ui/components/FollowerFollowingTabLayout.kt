@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -20,15 +21,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.learn.githubusercompose.domain.model.FakeUserDataSource
-import com.learn.githubusercompose.domain.model.User
+import com.learn.githubusercompose.domain.model.UserItemUiState
+import com.learn.githubusercompose.core.common.UiState
 import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
-fun FollowerFollowingTabLayout(modifier: Modifier = Modifier) {
+fun FollowerFollowingTabLayout(
+    modifier: Modifier = Modifier,
+    followerState: UiState<List<UserItemUiState>>,
+    followingState: UiState<List<UserItemUiState>>
+) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Follower", "Following")
     val pagerState = rememberPagerState(pageCount = { tabTitles.size })
@@ -61,8 +65,8 @@ fun FollowerFollowingTabLayout(modifier: Modifier = Modifier) {
                 .weight(1f),
         ) { page ->
             when (page) {
-                0 -> FollowerList()
-                1 -> FollowingList()
+                0 -> FollowerList(state = followerState)
+                1 -> FollowingList(state = followingState)
             }
         }
     }
@@ -78,44 +82,69 @@ fun FollowerFollowingTabLayout(modifier: Modifier = Modifier) {
 @Composable
 fun FollowerList(
     modifier: Modifier = Modifier,
-    user: List<User> = FakeUserDataSource.dummyFollow
+    state: UiState<List<UserItemUiState>>
 ) {
-    LazyColumn(
-        contentPadding = PaddingValues(16.dp),
-        modifier = modifier
-    ) {
-        items(user) { data ->
-//            UserItem(
-//                image = data.avatarUrl,
-//                login = data.login,
-//                userRepo = data.repoCount,
-//            )
+    when (state) {
+        is UiState.Error -> {
+            Text(text = "Error occurred")
+        }
+
+        UiState.Loading -> {
+            CircularProgressIndicator()
+        }
+
+        is UiState.Success -> {
+            val users = state.data
+            LazyColumn(
+                contentPadding = PaddingValues(16.dp),
+                modifier = modifier
+            ) {
+                items(users) { data ->
+                    SearchUserItem(
+                        state = data,
+                        onItemClick = {}
+                    )
+                }
+            }
         }
     }
+
 }
 
 @Composable
 fun FollowingList(
     modifier: Modifier = Modifier,
-    user: List<User> = FakeUserDataSource.dummyFollow
+    state: UiState<List<UserItemUiState>>
 ) {
-    LazyColumn(
-        contentPadding = PaddingValues(16.dp),
-        modifier = modifier
-    ) {
-        items(user) { data ->
-//            UserItem(
-//                model = data.avatarUrl,
-//                login = data.login,
-//                userRepo = data.repoCount,
-//            )
+    when (state) {
+        is UiState.Error -> {
+            Text(text = "Error occurred")
+        }
+
+        UiState.Loading -> {
+            CircularProgressIndicator()
+        }
+
+        is UiState.Success -> {
+            val users = state.data
+            LazyColumn(
+                contentPadding = PaddingValues(16.dp),
+                modifier = modifier
+            ) {
+                items(users) { data ->
+                    SearchUserItem(
+                        state = data,
+                        onItemClick = {}
+                    )
+                }
+            }
         }
     }
 }
-
-@OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true)
-@Composable
-fun FollowerFollowingTabLayoutPreview() {
-    FollowerFollowingTabLayout()
-}
+//
+//@OptIn(ExperimentalFoundationApi::class)
+//@Preview(showBackground = true)
+//@Composable
+//fun FollowerFollowingTabLayoutPreview() {
+//    FollowerFollowingTabLayout()
+//}

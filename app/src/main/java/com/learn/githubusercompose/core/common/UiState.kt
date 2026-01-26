@@ -1,7 +1,6 @@
-package com.learn.githubusercompose.ui.common
+package com.learn.githubusercompose.core.common
 
 sealed class UiState<out T : Any?> {
-
 
     data object Loading : UiState<Nothing>()
 
