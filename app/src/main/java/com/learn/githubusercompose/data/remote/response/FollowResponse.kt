@@ -2,12 +2,6 @@ package com.learn.githubusercompose.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 
-data class FollowResponse(
-
-    @field:SerializedName("FollowResponse")
-    val followResponse: List<FollowResponseItem>? = null
-)
-
 data class FollowResponseItem(
 
     @field:SerializedName("gists_url")

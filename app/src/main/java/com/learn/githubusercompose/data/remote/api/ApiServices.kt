@@ -1,7 +1,7 @@
 package com.learn.githubusercompose.data.remote.api
 
 import com.learn.githubusercompose.data.remote.response.DetailUserResponse
-import com.learn.githubusercompose.data.remote.response.FollowResponse
+import com.learn.githubusercompose.data.remote.response.FollowResponseItem
 import com.learn.githubusercompose.data.remote.response.SearchRepositoriesResponse
 import com.learn.githubusercompose.data.remote.response.SearchUserResponse
 import retrofit2.http.GET
@@ -14,7 +14,7 @@ interface ApiServices {
         @Query("q") query: String
     ): SearchUserResponse
 
-    @GET("search/{username}")
+    @GET("users/{username}")
     suspend fun getDetailUser(
         @Path("username") username: String
     ): DetailUserResponse
@@ -30,10 +30,10 @@ interface ApiServices {
     @GET("users/{username}/followers")
     suspend fun getFollowers(
         @Path("username") username: String
-    ): FollowResponse
+    ): List<FollowResponseItem>
 
     @GET("users/{username}/following")
     suspend fun getFollowing(
         @Path("username") username: String
-    ): FollowResponse
+    ): List<FollowResponseItem>
 }

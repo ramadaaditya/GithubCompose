@@ -41,12 +41,9 @@ fun DetailScreen(
     viewModel: DetailViewModel = hiltViewModel(),
     navigateBack: () -> Unit,
 ) {
-
     val detailState = viewModel.uiState.collectAsStateWithLifecycle().value
     val followerState = viewModel.follower.collectAsStateWithLifecycle().value
     val followingState = viewModel.following.collectAsStateWithLifecycle().value
-
-
     when (detailState) {
         is UiState.Error -> {
             Text(text = detailState.errorMessage)
@@ -61,7 +58,7 @@ fun DetailScreen(
                 detailUser = detailState.data,
                 followerState = followerState,
                 followingState = followingState,
-                onBackClick = {}
+                onBackClick = navigateBack
             )
         }
     }
@@ -147,7 +144,7 @@ fun DetailContent(
         }
         FollowerFollowingTabLayout(
             followerState = followerState,
-            followingState = followerState
+            followingState = followingState
         )
     }
 }
@@ -178,19 +175,3 @@ fun MyTopBar(
         modifier = modifier
     )
 }
-
-
-//@Preview(showBackground = true, device = Devices.PIXEL_4)
-//@Composable
-//fun DetailScreenPreview() {
-//    GithubUserComposeTheme(dynamicColor = false) {
-//        DetailContent(
-//            name = "Ramada Aditya",
-//            bio = "This is Android Developer bio",
-//            follower = 123,
-//            following = 456,
-//            repoCount = 90,
-//            onBackClick = {},
-//        )
-//    }
-//}

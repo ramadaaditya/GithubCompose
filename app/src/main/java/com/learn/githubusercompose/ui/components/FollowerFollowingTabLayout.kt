@@ -71,7 +71,6 @@ fun FollowerFollowingTabLayout(
         }
     }
 
-    // Update selectedTabIndex when pagerState changes
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             selectedTabIndex = page
@@ -89,7 +88,7 @@ fun FollowerList(
             Text(text = "Error occurred")
         }
 
-        UiState.Loading -> {
+        is UiState.Loading -> {
             CircularProgressIndicator()
         }
 
@@ -141,10 +140,3 @@ fun FollowingList(
         }
     }
 }
-//
-//@OptIn(ExperimentalFoundationApi::class)
-//@Preview(showBackground = true)
-//@Composable
-//fun FollowerFollowingTabLayoutPreview() {
-//    FollowerFollowingTabLayout()
-//}

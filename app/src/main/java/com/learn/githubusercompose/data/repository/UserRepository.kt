@@ -25,7 +25,6 @@ class UserRepository @Inject constructor(
 ) : IUserRepository {
     override fun searchUsers(query: String): Flow<Resource<List<UserItemUiState>>> = flow {
         try {
-//            From dto to entity
             val response = apiService.searchUser(query)
             val data = response.items.toUserEntities()
             val usersFavorite = userDao.getFavoriteUserIds()
@@ -38,7 +37,6 @@ class UserRepository @Inject constructor(
             }
             userDao.deleteAllNonFavorites()
             userDao.insertUsers(insertFavorite)
-//            From entity to domain model
             val domain = data.toUserDomains()
             emit(Resource.Success(domain))
         } catch (e: Exception) {
@@ -61,7 +59,7 @@ class UserRepository @Inject constructor(
     override fun getFollowing(username: String): Flow<Resource<List<UserItemUiState>>> = flow {
         try {
             val response = apiService.getFollowing(username)
-            val data = response.followResponse.toFollowDomain()
+            val data = response.toFollowDomain()
             emit(Resource.Success(data))
         } catch (e: Exception) {
             Log.e(TAG, "searchUsers: Terjadi kesalahan ${e.localizedMessage}")
@@ -72,7 +70,7 @@ class UserRepository @Inject constructor(
     override fun getFollowers(username: String): Flow<Resource<List<UserItemUiState>>> = flow {
         try {
             val response = apiService.getFollowers(username)
-            val data = response.followResponse.toFollowDomain()
+            val data = response.toFollowDomain()
             emit(Resource.Success(data))
         } catch (e: Exception) {
             Log.e(TAG, "searchUsers: Terjadi kesalahan ${e.localizedMessage}")

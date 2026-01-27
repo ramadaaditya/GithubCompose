@@ -48,7 +48,6 @@ fun UserItem(
     user: DetailUser,
     modifier: Modifier = Modifier,
 ) {
-    // Gunakan Card untuk bentuk rounded dan elevasi default
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -61,14 +60,12 @@ fun UserItem(
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp) // Padding dalam (content padding)
+                .padding(16.dp)
         ) {
-            // --- HEADER SECTION ---
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Avatar
                 AsyncImage(
                     model = user.avatarUrl,
                     contentDescription = null,
@@ -190,7 +187,6 @@ fun StatItem(icon: ImageVector, text: String) {
     }
 }
 
-// Preview
 @Preview(showBackground = true)
 @Composable
 fun UserItemPreviewRefactored() {

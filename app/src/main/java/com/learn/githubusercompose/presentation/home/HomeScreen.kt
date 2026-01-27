@@ -35,17 +35,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.learn.githubusercompose.core.common.UiState
 import com.learn.githubusercompose.core.utils.languageColor
 import com.learn.githubusercompose.domain.model.TrendingRepo
 import com.learn.githubusercompose.domain.model.UserItemUiState
-import com.learn.githubusercompose.core.common.UiState
 import com.learn.githubusercompose.ui.components.Search
 import com.learn.githubusercompose.ui.components.SearchUserItem
 
@@ -53,6 +52,7 @@ import com.learn.githubusercompose.ui.components.SearchUserItem
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
+    navigateToDetail: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var query by rememberSaveable { mutableStateOf("") }
@@ -98,8 +98,8 @@ fun HomeScreen(
                     HomeDashboardContent(
                         userList = state.data.users,
                         trendingList = state.data.trendingRepo ?: emptyList(),
-                        onItemClick = {
-//                            navigateToDetail(it.id)
+                        onItemClick = { username ->
+                            navigateToDetail(username)
                         }
                     )
                 }
@@ -113,7 +113,7 @@ fun HomeScreen(
 fun HomeDashboardContent(
     trendingList: List<TrendingRepo>,
     userList: List<UserItemUiState>,
-    onItemClick: () -> Unit,
+    onItemClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -155,7 +155,9 @@ fun HomeDashboardContent(
             ) { data ->
                 SearchUserItem(
                     state = data,
-                    onItemClick = {},
+                    onItemClick = { username ->
+                        onItemClick(username)
+                    },
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                 )
@@ -193,7 +195,6 @@ fun SectionHeader(
             )
         }
     }
-
 }
 
 
@@ -285,72 +286,6 @@ fun TrendingRepoCard(trendingRepo: TrendingRepo, modifier: Modifier = Modifier) 
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 )
-            }
-        }
-    }
-}
-
-
-@Composable
-fun ActivityItem(user: UserItemUiState, modifier: Modifier = Modifier) {
-    Card(
-        shape = RoundedCornerShape(12.dp), // Radius lebih besar sesuai gambar
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-//            crossAxisAlignment = CrossAxisAlignment.Start
-        ) {
-            // Icon Aktivitas (Bulat)
-            AsyncImage(
-                model = user.avatarUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = user.username,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    )
-                    Text(
-                        text = "2h ago",
-                        style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurface)
-                    )
-                }
-
-                Text(
-                    text = "starred oven-sh/bun", // Simulasi aktivitas
-                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary)
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFFD35400))
-                    ) // Rust Color
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        "Zig",
-                        style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurface)
-                    )
-                }
             }
         }
     }

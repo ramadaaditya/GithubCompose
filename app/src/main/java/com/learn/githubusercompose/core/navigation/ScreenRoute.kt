@@ -9,6 +9,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class ScreenRoute() {
     @Serializable
+    object SplashRoute : ScreenRoute()
+
+    @Serializable
+
     object HomeRoute : ScreenRoute()
 
     @Serializable
