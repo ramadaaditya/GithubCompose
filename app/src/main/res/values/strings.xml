@@ -6,4 +6,7 @@
     <string name="placeholder_search">Search User</string>
     <string name="user_not_found">User Not Found</string>
     <string name="no_favorite_users">No Favorite Users</string>
+    <string name="home">Home</string>
+    <string name="favorite">Favorite</string>
+    <string name="settings">Settings</string>
 </resources>

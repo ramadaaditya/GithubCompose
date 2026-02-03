@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.rememberNavController
-import com.learn.githubusercompose.core.navigation.AppNavHost
+import com.learn.githubusercompose.ui.GithubApp
+import com.learn.githubusercompose.ui.rememberGithubAppState
 import com.learn.githubusercompose.ui.theme.GithubUserComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,12 +20,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GithubUserComposeTheme {
+                val appState = rememberGithubAppState()
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val navController = rememberNavController()
-                    AppNavHost(navController)
+                    GithubApp(appState)
                 }
             }
         }

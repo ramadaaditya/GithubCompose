@@ -16,6 +16,10 @@ sealed class ScreenRoute() {
     object HomeRoute : ScreenRoute()
 
     @Serializable
+
+    object FavoriteRoute : ScreenRoute()
+
+    @Serializable
     object ProfileRoute : ScreenRoute()
 
     @Serializable
@@ -23,23 +27,8 @@ sealed class ScreenRoute() {
 
     @Serializable
     object NotificationRoute : ScreenRoute()
+
+    @Serializable
+    object SettingsRoute : ScreenRoute()
 }
 
-
-val navigationItem = listOf(
-    NavigationItem(
-        title = "Home",
-        icon = Icons.Default.Home,
-        screenRoute = ScreenRoute.HomeRoute
-    ),
-    NavigationItem(
-        title = "Notification",
-        icon = Icons.Default.Notifications,
-        screenRoute = ScreenRoute.NotificationRoute
-    ),
-    NavigationItem(
-        title = "Profile",
-        icon = Icons.Default.Person,
-        screenRoute = ScreenRoute.ProfileRoute
-    )
-)

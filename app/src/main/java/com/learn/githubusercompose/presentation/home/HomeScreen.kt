@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -47,6 +48,7 @@ import com.learn.githubusercompose.domain.model.TrendingRepo
 import com.learn.githubusercompose.domain.model.UserItemUiState
 import com.learn.githubusercompose.ui.components.Search
 import com.learn.githubusercompose.ui.components.SearchUserItem
+
 
 @Composable
 fun HomeScreen(
@@ -86,7 +88,6 @@ fun HomeScreen(
                     Text(
                         text = state.errorMessage,
                         color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(16.dp)
                     )
                 }
 

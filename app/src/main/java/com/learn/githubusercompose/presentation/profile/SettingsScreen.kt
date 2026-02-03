@@ -19,10 +19,21 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import com.learn.githubusercompose.R
+import com.learn.githubusercompose.core.navigation.ScreenRoute
+
+fun NavController.navigateToSettings(navOptions: NavOptions? = null) =
+    if (navOptions != null) {
+        navigate(route = ScreenRoute.SettingsRoute, navOptions)
+    } else {
+        navigate(ScreenRoute.SettingsRoute)
+    }
+
 
 @Composable
-fun ProfileScreen(
+fun SettingsScreen(
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -46,13 +57,14 @@ fun ProfileScreen(
             text = stringResource(R.string.name_dicoding),
             fontSize = 20.sp,
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(8.dp))
+            modifier = Modifier.padding(8.dp)
+        )
         Text(text = stringResource(R.string.email_dicoding))
     }
 }
 
 @Preview(showBackground = true, device = Devices.PIXEL_4)
 @Composable
-fun ProfileScreenPreview() {
-    ProfileScreen()
+fun SettingsScreenPreview() {
+    SettingsScreen()
 }

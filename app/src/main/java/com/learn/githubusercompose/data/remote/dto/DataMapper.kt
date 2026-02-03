@@ -1,5 +1,8 @@
 package com.learn.githubusercompose.data.remote.dto
 
+import com.learn.githubusercompose.data.local.entity.DetailUserEntity
+import com.learn.githubusercompose.data.local.entity.FollowerEntity
+import com.learn.githubusercompose.data.local.entity.FollowingEntity
 import com.learn.githubusercompose.data.local.entity.SearchUserEntity
 import com.learn.githubusercompose.data.local.entity.TrendingRepoEntity
 import com.learn.githubusercompose.data.remote.response.DetailUserResponse
@@ -15,7 +18,6 @@ fun ItemsItem?.toUserEntity(): SearchUserEntity {
         id = this?.id ?: 0,
         username = this?.login ?: "Unknown User",
         avatarUrl = this?.avatarUrl ?: "",
-        htmlUrl = this?.htmlUrl ?: ""
     )
 }
 
@@ -25,6 +27,54 @@ fun SearchUserEntity.toDomainUser(): UserItemUiState {
         username = this.username,
         avatarUrl = this.avatarUrl ?: "",
         isFavorite = this.isFavorite
+    )
+}
+
+fun FollowingEntity.toDomain(): UserItemUiState {
+    return UserItemUiState(
+        id = this.id,
+        username = this.username,
+        avatarUrl = this.avatarUrl,
+        isFavorite = this.isFavorite
+    )
+}
+
+fun FollowerEntity.toDomain(): UserItemUiState {
+    return UserItemUiState(
+        id = this.id,
+        username = this.username,
+        avatarUrl = this.avatarUrl,
+        isFavorite = this.isFavorite
+    )
+}
+
+fun DetailUserEntity?.toDomain(): DetailUser {
+    return DetailUser(
+        id = this?.id ?: 0,
+        following = this?.following ?: 0,
+        followers = this?.followers ?: 0,
+        name = this?.name ?: "Unknown",
+        username = this?.username ?: "Unknown",
+        repoCount = this?.repoCount ?: 0,
+        bio = this?.bio ?: "Bio is not set",
+        email = this?.email ?: "Email not set",
+        location = this?.location ?: "Location unknown",
+        avatarUrl = this?.avatarUrl ?: "Unknown",
+    )
+}
+
+fun DetailUserResponse.toEntity(): DetailUserEntity {
+    return DetailUserEntity(
+        id = this.id ?: 0,
+        following = this.following ?: 0,
+        followers = this.followers ?: 0,
+        name = this.name ?: "Unknown",
+        username = this.login ?: "Unknown",
+        repoCount = this.publicRepos ?: 0,
+        bio = this.bio ?: "Bio is not set",
+        email = this.email ?: "Email not set",
+        location = this.location ?: "Location unknown",
+        avatarUrl = this.avatarUrl ?: "Unknown",
     )
 }
 
@@ -64,6 +114,24 @@ fun FollowResponseItem.toDomain(): UserItemUiState {
     )
 }
 
+fun FollowResponseItem.toFollowingEntity(owner: String): FollowingEntity {
+    return FollowingEntity(
+        id = this.id ?: 0,
+        username = this.login ?: "Unknown",
+        avatarUrl = this.avatarUrl ?: "Avatar Not Found",
+        ownerName = owner
+    )
+}
+
+fun FollowResponseItem.toFollowerEntity(owner: String): FollowerEntity {
+    return FollowerEntity(
+        id = this.id ?: 0,
+        username = this.login ?: "Unknown",
+        avatarUrl = this.avatarUrl ?: "Avatar Not Found",
+        ownerName = owner
+    )
+}
+
 fun List<ItemsItem>?.toUserEntities(): List<SearchUserEntity> {
     return this?.map { it.toUserEntity() } ?: emptyList()
 }
@@ -97,7 +165,7 @@ fun RepositoryItem.toDomainTrendingRepository(): TrendingRepo {
 fun DetailUserResponse.toDetailUserDomain(): DetailUser {
     return DetailUser(
         following = this.following ?: 0,
-        follower = this.followers ?: 0,
+        followers = this.followers ?: 0,
         name = this.name ?: "Unknown",
         username = this.login ?: "Unknown",
         repoCount = this.publicRepos ?: 0,

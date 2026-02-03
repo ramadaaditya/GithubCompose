@@ -7,9 +7,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import com.learn.githubusercompose.core.navigation.ScreenRoute
+
+fun NavController.navigateToFavorite(navOptions: NavOptions? = null) =
+    if (navOptions != null) {
+        navigate(route = ScreenRoute.FavoriteRoute, navOptions)
+    } else {
+        navigate(ScreenRoute.FavoriteRoute)
+    }
+
 
 @Composable
-fun NotificationScreen() {
+fun FavoriteScreen() {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,

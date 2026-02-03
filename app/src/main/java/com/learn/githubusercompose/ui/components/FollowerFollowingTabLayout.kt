@@ -1,8 +1,10 @@
 package com.learn.githubusercompose.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,16 +22,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.learn.githubusercompose.domain.model.UserItemUiState
 import com.learn.githubusercompose.core.common.UiState
+import com.learn.githubusercompose.domain.model.UserItemUiState
 import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
 fun FollowerFollowingTabLayout(
-    modifier: Modifier = Modifier,
     followerState: UiState<List<UserItemUiState>>,
     followingState: UiState<List<UserItemUiState>>
 ) {
@@ -39,10 +41,11 @@ fun FollowerFollowingTabLayout(
 
     val coroutineScope = rememberCoroutineScope()
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
         TabRow(
             selectedTabIndex = selectedTabIndex,
-            modifier = modifier
         ) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
@@ -62,7 +65,9 @@ fun FollowerFollowingTabLayout(
             state = pagerState,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
+                .align(Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.Top,
         ) { page ->
             when (page) {
                 0 -> FollowerList(state = followerState)
@@ -80,29 +85,32 @@ fun FollowerFollowingTabLayout(
 
 @Composable
 fun FollowerList(
-    modifier: Modifier = Modifier,
     state: UiState<List<UserItemUiState>>
 ) {
-    when (state) {
-        is UiState.Error -> {
-            Text(text = "Error occurred")
-        }
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        when (state) {
+            is UiState.Error -> {
+                Text(text = "Error occurred")
+            }
 
-        is UiState.Loading -> {
-            CircularProgressIndicator()
-        }
+            is UiState.Loading -> {
+                CircularProgressIndicator()
+            }
 
-        is UiState.Success -> {
-            val users = state.data
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                modifier = modifier
-            ) {
-                items(users) { data ->
-                    SearchUserItem(
-                        state = data,
-                        onItemClick = {}
-                    )
+            is UiState.Success -> {
+                val users = state.data
+                LazyColumn(
+                    contentPadding = PaddingValues(16.dp),
+                ) {
+                    items(users) { data ->
+                        SearchUserItem(
+                            state = data,
+                            onItemClick = {}
+                        )
+                    }
                 }
             }
         }
@@ -112,29 +120,32 @@ fun FollowerList(
 
 @Composable
 fun FollowingList(
-    modifier: Modifier = Modifier,
     state: UiState<List<UserItemUiState>>
 ) {
-    when (state) {
-        is UiState.Error -> {
-            Text(text = "Error occurred")
-        }
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        when (state) {
+            is UiState.Error -> {
+                Text(text = "Error occurred")
+            }
 
-        UiState.Loading -> {
-            CircularProgressIndicator()
-        }
+            UiState.Loading -> {
+                CircularProgressIndicator()
+            }
 
-        is UiState.Success -> {
-            val users = state.data
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                modifier = modifier
-            ) {
-                items(users) { data ->
-                    SearchUserItem(
-                        state = data,
-                        onItemClick = {}
-                    )
+            is UiState.Success -> {
+                val users = state.data
+                LazyColumn(
+                    contentPadding = PaddingValues(16.dp),
+                ) {
+                    items(users) { data ->
+                        SearchUserItem(
+                            state = data,
+                            onItemClick = {}
+                        )
+                    }
                 }
             }
         }

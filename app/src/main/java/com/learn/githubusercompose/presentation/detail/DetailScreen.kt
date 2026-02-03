@@ -3,6 +3,7 @@ package com.learn.githubusercompose.presentation.detail
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,11 +31,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import coil3.compose.AsyncImage
 import com.learn.githubusercompose.R
-import com.learn.githubusercompose.domain.model.UserItemUiState
 import com.learn.githubusercompose.core.common.UiState
+import com.learn.githubusercompose.core.navigation.ScreenRoute
+import com.learn.githubusercompose.domain.model.UserItemUiState
 import com.learn.githubusercompose.ui.components.FollowerFollowingTabLayout
+
+fun NavController.navigateToDetail(navOptions: NavOptions? = null) =
+    if (navOptions != null) {
+        navigate(route = ScreenRoute.DetailUserRoute, navOptions)
+    } else {
+        navigate(ScreenRoute.DetailUserRoute)
+    }
+
 
 @Composable
 fun DetailScreen(
@@ -44,22 +56,27 @@ fun DetailScreen(
     val detailState = viewModel.uiState.collectAsStateWithLifecycle().value
     val followerState = viewModel.follower.collectAsStateWithLifecycle().value
     val followingState = viewModel.following.collectAsStateWithLifecycle().value
-    when (detailState) {
-        is UiState.Error -> {
-            Text(text = detailState.errorMessage)
-        }
+    Box(
+        Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        when (detailState) {
+            is UiState.Error -> {
+                Text(text = detailState.errorMessage)
+            }
 
-        UiState.Loading -> {
-            CircularProgressIndicator()
-        }
+            UiState.Loading -> {
+                CircularProgressIndicator()
+            }
 
-        is UiState.Success -> {
-            DetailContent(
-                detailUser = detailState.data,
-                followerState = followerState,
-                followingState = followingState,
-                onBackClick = navigateBack
-            )
+            is UiState.Success -> {
+                DetailContent(
+                    detailUser = detailState.data,
+                    followerState = followerState,
+                    followingState = followingState,
+                    onBackClick = navigateBack
+                )
+            }
         }
     }
 }
@@ -79,8 +96,8 @@ fun DetailContent(
         MyTopBar(title = "Details", onBackClick = { onBackClick() })
         Column(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(16.dp, bottom = 8.dp)
+                .align(Alignment.CenterHorizontally),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             AsyncImage(
                 model = detailUser.image,
@@ -88,11 +105,9 @@ fun DetailContent(
                 contentScale = ContentScale.Crop,
                 error = painterResource(R.drawable.logo),
                 modifier = Modifier
-                    .padding(bottom = 8.dp)
                     .size(100.dp)
                     .clip(CircleShape)
                     .align(Alignment.CenterHorizontally)
-                    .border(2.dp, Color.Gray, CircleShape)
             )
             Text(
                 text = detailUser.name,
@@ -100,7 +115,6 @@ fun DetailContent(
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 8.dp)
             )
             Text(
                 text = detailUser.bio,
@@ -154,7 +168,6 @@ fun DetailContent(
 fun MyTopBar(
     title: String,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -172,6 +185,5 @@ fun MyTopBar(
                 )
             }
         },
-        modifier = modifier
     )
 }

@@ -145,7 +145,7 @@ fun UserItem(
 
                 StatItem(
                     icon = Icons.Default.People,
-                    text = "${user.follower} Followers"
+                    text = "${user.followers} Followers"
                 )
 
                 // Language Item (Custom dengan Dot)
@@ -196,7 +196,7 @@ fun UserItemPreviewRefactored() {
                 id = 1,
                 username = "dchen_code",
                 repoCount = 120,
-                follower = 850,
+                followers = 850,
                 following = 45,
                 avatarUrl = "",
                 bio = "React Specialist building accessible UI libraries. Creating tools for the modern web. Mobile security specialist",

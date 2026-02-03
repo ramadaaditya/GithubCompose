@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,13 +24,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.learn.githubusercompose.R
-import com.learn.githubusercompose.core.navigation.ScreenRoute
 import kotlinx.coroutines.delay
 
 @Composable
@@ -51,7 +50,8 @@ fun SplashScreen(
         // 1. ANIMASI
         LottieAnimation(
             composition = composition,
-            progress = { logoAnimationState.progress }
+            progress = { logoAnimationState.progress },
+            Modifier.size(250.dp)
         )
 
         // 2. NAVIGASI OTOMATIS

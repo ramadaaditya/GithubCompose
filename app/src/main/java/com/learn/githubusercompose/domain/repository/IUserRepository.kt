@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface IUserRepository {
     fun searchUsers(query: String): Flow<Resource<List<UserItemUiState>>>
-    fun getDetailUser(username: String): Flow<Resource<DetailUser>>
+    fun getDetailUser(username: String): Flow<Resource<DetailUser?>>
     fun getFollowing(username: String): Flow<Resource<List<UserItemUiState>>>
     fun getFollowers(username: String): Flow<Resource<List<UserItemUiState>>>
+
+
 }

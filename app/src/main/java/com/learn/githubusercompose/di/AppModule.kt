@@ -3,6 +3,8 @@ package com.learn.githubusercompose.di
 import android.content.Context
 import androidx.room.Room
 import com.learn.githubusercompose.BuildConfig
+import com.learn.githubusercompose.data.local.dao.DetailUserDao
+import com.learn.githubusercompose.data.local.dao.FollowDao
 import com.learn.githubusercompose.data.local.dao.SearchUserDao
 import com.learn.githubusercompose.data.local.dao.TrendingRepoDao
 import com.learn.githubusercompose.data.local.database.UserDatabase
@@ -73,6 +75,17 @@ object AppModule {
     fun provideUserDAO(db: UserDatabase): SearchUserDao {
         return db.searchDao()
     }
+
+    @Provides
+    fun provideDetailUserDAO(db: UserDatabase): DetailUserDao {
+        return db.detailUserDao()
+    }
+
+    @Provides
+    fun provideFollowDAO(db: UserDatabase): FollowDao {
+        return db.followDao()
+    }
+
 
     @Provides
     fun provideTrendingRepoDAO(db: UserDatabase): TrendingRepoDao {

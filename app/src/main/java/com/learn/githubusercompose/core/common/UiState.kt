@@ -1,10 +1,10 @@
 package com.learn.githubusercompose.core.common
 
-sealed class UiState<out T : Any?> {
+sealed class UiState< T > {
 
-    data object Loading : UiState<Nothing>()
+    class Loading<T> : UiState<T>()
 
-    data class Success<out T>(val data: T) : UiState<T>()
+    data class Success<T>(val data: T) : UiState<T>()
 
-    data class Error(val errorMessage: String) : UiState<Nothing>()
+    data class Error<T>(val errorMessage: String) : UiState<Nothing>()
 }
