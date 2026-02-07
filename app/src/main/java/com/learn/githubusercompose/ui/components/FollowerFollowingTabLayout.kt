@@ -1,6 +1,7 @@
 package com.learn.githubusercompose.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.learn.githubusercompose.core.common.UiState
 import com.learn.githubusercompose.domain.model.UserItemUiState
@@ -32,6 +34,7 @@ import kotlinx.coroutines.launch
 @ExperimentalFoundationApi
 @Composable
 fun FollowerFollowingTabLayout(
+    modifier : Modifier = Modifier,
     followerState: UiState<List<UserItemUiState>>,
     followingState: UiState<List<UserItemUiState>>
 ) {
@@ -42,7 +45,7 @@ fun FollowerFollowingTabLayout(
     val coroutineScope = rememberCoroutineScope()
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
     ) {
         TabRow(
             selectedTabIndex = selectedTabIndex,
@@ -89,7 +92,6 @@ fun FollowerList(
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
     ) {
         when (state) {
             is UiState.Error -> {
@@ -124,7 +126,6 @@ fun FollowingList(
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
     ) {
         when (state) {
             is UiState.Error -> {

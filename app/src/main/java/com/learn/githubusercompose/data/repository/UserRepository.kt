@@ -53,11 +53,11 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override fun getDetailUser(username: String): Flow<Resource<DetailUser?>> {
+    override fun getDetailUser(username: String): Flow<Resource<DetailUser>> {
         return networkBoundResource(
             query = {
                 detailDao.getDetailUser(username).map { entity ->
-                    entity?.toDomain()
+                    entity.toDomain()
                 }
             },
             fetch = {
@@ -67,9 +67,6 @@ class UserRepository @Inject constructor(
                 val entity = response.toEntity()
                 detailDao.insertDetailUser(entity)
             },
-            shouldFetch = { data ->
-                data == null
-            }
         )
     }
 
@@ -77,6 +74,7 @@ class UserRepository @Inject constructor(
         return networkBoundResource(
             query = {
                 followDao.getFollowing(username).map { entities ->
+                    Log.d(TAG, "getFollowing: ${entities.size}")
                     entities.map { it.toDomain() }
                 }
             },
@@ -87,7 +85,7 @@ class UserRepository @Inject constructor(
                 val entity = response.map {
                     it.toFollowingEntity(owner = username)
                 }
-                followDao.deleteFollowersByUsername(username)
+                followDao.deleteFollowingByUsername(username)
                 followDao.insertFollowing(entity)
             },
             shouldFetch = { data ->
@@ -100,6 +98,7 @@ class UserRepository @Inject constructor(
         return networkBoundResource(
             query = {
                 followDao.getFollowers(username).map { entities ->
+                    Log.d(TAG, "getFollowing: ${entities.size}")
                     entities.map { it.toDomain() }
                 }
             },

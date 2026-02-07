@@ -7,15 +7,14 @@ import androidx.navigation.toRoute
 import com.learn.githubusercompose.core.common.UiState
 import com.learn.githubusercompose.core.navigation.ScreenRoute
 import com.learn.githubusercompose.data.Resource
+import com.learn.githubusercompose.domain.model.DetailUser
 import com.learn.githubusercompose.domain.model.UserItemUiState
 import com.learn.githubusercompose.domain.repository.IUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class DetailUiState(
@@ -29,26 +28,26 @@ data class DetailUiState(
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val repository: IUserRepository,
+    repository: IUserRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val route = savedStateHandle.toRoute<ScreenRoute.DetailUserRoute>()
-    val usernameArg = route.username
+    private val usernameArg = route.username
 
-    private val _uiState = MutableStateFlow<UiState<DetailUiState>>(UiState.Loading)
-    val uiState: StateFlow<UiState<DetailUiState>>
-        get() = _uiState
+    val uiState: StateFlow<UiState<DetailUiState>> =
+        repository.getDetailUser(usernameArg)
+            .map { it.toDetailUiState() }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = UiState.Loading
+            )
 
-    //    private val _follower = MutableStateFlow<UiState<List<UserItemUiState>>>(UiState.Loading)
     val follower: StateFlow<UiState<List<UserItemUiState>>> =
         repository.getFollowers(usernameArg)
             .map { resource ->
-                when (resource) {
-                    is Resource.Loading -> UiState.Loading()
-                    is Resource.Error -> UiState.Error(resource.message ?: "Error")
-                    is Resource.Success ->
-                        UiState.Success(resource.data ?: emptyList())
-                }
+
+                resource.toListUiState()
             }
             .stateIn(
                 scope = viewModelScope,
@@ -56,58 +55,51 @@ class DetailViewModel @Inject constructor(
                 initialValue = UiState.Loading
             )
 
-    private val _following = MutableStateFlow<UiState<List<UserItemUiState>>>(UiState.Loading)
-    val following: StateFlow<UiState<List<UserItemUiState>>> get() = _following
-
-    init {
-        getUserByUsername(usernameArg)
-    }
-
-
-    fun getUserByUsername(username: String) {
-        viewModelScope.launch {
-            repository.getDetailUser(username).collect { resource ->
-                when (resource) {
-                    is Resource.Error -> {
-                        _uiState.value = UiState.Error(resource.message ?: "Unknown Message")
-                    }
-
-                    is Resource.Loading -> {
-                        _uiState.value = UiState.Loading
-                    }
-
-                    is Resource.Success -> {
-                        val data = resource.data
-                        if (data != null) {
-                            val detailUiState = DetailUiState(
-                                image = data.avatarUrl,
-                                name = data.name,
-                                bio = data.bio,
-                                follower = data.followers,
-                                following = data.following,
-                                repoCount = data.repoCount
-                            )
-                            _uiState.value = UiState.Success(detailUiState)
-                        }
-                    }
-
-                }
+    val following: StateFlow<UiState<List<UserItemUiState>>> =
+        repository.getFollowing(usernameArg)
+            .map { resource ->
+                resource.toListUiState()
             }
-        }
-    }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = UiState.Loading
+            )
+}
 
-    fun getFollowing(username: String) {
-        viewModelScope.launch {
-            repository.getFollowing(username).collect { resource ->
-                when (resource) {
-                    is Resource.Error -> _following.value =
-                        UiState.Error(resource.message ?: "Error")
 
-                    is Resource.Loading -> _following.value = UiState.Loading
-                    is Resource.Success -> _following.value =
-                        UiState.Success(resource.data ?: emptyList())
-                }
-            }
+private fun Resource<DetailUser>.toDetailUiState(): UiState<DetailUiState> {
+    return when (this) {
+        is Resource.Loading -> UiState.Loading
+        is Resource.Error -> UiState.Error(
+            errorMessage = message ?: "Unknown error occurred"
+        )
+
+        is Resource.Success -> {
+            data?.let { user ->
+                UiState.Success(
+                    DetailUiState(
+                        image = user.avatarUrl,
+                        name = user.name,
+                        bio = user.bio,
+                        follower = user.followers,
+                        following = user.following,
+                        repoCount = user.repoCount
+                    )
+                )
+            } ?: UiState.Error("User data is empty")
         }
     }
 }
+
+private fun Resource<List<UserItemUiState>>.toListUiState(): UiState<List<UserItemUiState>> {
+    return when (this) {
+        is Resource.Loading -> UiState.Loading
+        is Resource.Error -> UiState.Error(
+            errorMessage = message ?: "Unknown error occurred"
+        )
+
+        is Resource.Success -> UiState.Success(data ?: emptyList())
+    }
+}
+

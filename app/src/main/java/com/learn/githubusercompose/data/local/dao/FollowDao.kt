@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FollowDao {
-    @Query("SELECT * FROM follower WHERE username = :username ORDER BY id ASC")
+    @Query("SELECT * FROM follower WHERE owner_name = :username ORDER BY id ASC")
     fun getFollowers(username: String): Flow<List<FollowerEntity>>
 
     @Insert(onConflict = REPLACE)
     suspend fun insertFollowers(following: List<FollowerEntity>)
 
-    @Query("SELECT * FROM `following` WHERE username = :username ORDER BY id ASC")
+    @Query("SELECT * FROM `following` WHERE owner_name = :username ORDER BY id ASC")
     fun getFollowing(username: String): Flow<List<FollowingEntity>>
 
     @Insert(onConflict = REPLACE)
@@ -24,5 +24,7 @@ interface FollowDao {
 
     @Query("DELETE FROM follower WHERE username = :username")
     suspend fun deleteFollowersByUsername(username  : String)
+    @Query("DELETE FROM `following` WHERE username = :username")
+    suspend fun deleteFollowingByUsername(username  : String)
 
 }
