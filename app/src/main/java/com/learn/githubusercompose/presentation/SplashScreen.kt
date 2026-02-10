@@ -47,14 +47,12 @@ fun SplashScreen(
             isPlaying = true
         )
 
-        // 1. ANIMASI
         LottieAnimation(
             composition = composition,
             progress = { logoAnimationState.progress },
             Modifier.size(250.dp)
         )
 
-        // 2. NAVIGASI OTOMATIS
         LaunchedEffect(key1 = logoAnimationState.isAtEnd) {
             if (logoAnimationState.isAtEnd) {
                 delay(1000)
@@ -62,7 +60,6 @@ fun SplashScreen(
             }
         }
 
-        // 3. ATRIBUSI (Diubah dari HTML ke AnnotatedString)
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -70,42 +67,34 @@ fun SplashScreen(
                 .padding(bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Kita membangun String yang kaya format
             val attributionText = buildAnnotatedString {
-                // Style untuk Link (Underline + Sedikit Bold)
                 val linkStyle = SpanStyle(
                     textDecoration = TextDecoration.Underline,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f)
                 )
 
-                // Style untuk Teks Biasa ("by", "on")
                 val normalStyle = SpanStyle(
                     color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
                     fontWeight = FontWeight.Light
                 )
 
-                // "Github"
                 withStyle(style = linkStyle) {
-                    append("Github")
+                    append("Github Icon")
                 }
 
-                // " by "
                 withStyle(style = normalStyle) {
                     append(" by ")
                 }
 
-                // "Thao Phan"
                 withStyle(style = linkStyle) {
                     append("Thao Phan")
                 }
 
-                // " on "
                 withStyle(style = normalStyle) {
                     append(" on ")
                 }
 
-                // "IconScout"
                 withStyle(style = linkStyle) {
                     append("IconScout")
                 }
@@ -119,7 +108,6 @@ fun SplashScreen(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Render text yang sudah di-style tadi
             Text(
                 text = attributionText,
                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),

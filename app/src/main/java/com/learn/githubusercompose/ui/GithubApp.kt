@@ -1,21 +1,24 @@
 package com.learn.githubusercompose.ui
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Transparent
@@ -24,6 +27,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.learn.githubusercompose.core.activity.LocalAppSnackbarHostState
 import com.learn.githubusercompose.core.navigation.AppNavHost
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun GithubApp(
@@ -33,6 +37,26 @@ fun GithubApp(
     val snackbarHostState = remember { SnackbarHostState() }
 
     CompositionLocalProvider(LocalAppSnackbarHostState provides snackbarHostState) {
+        LaunchedEffect(Unit) {
+            appState.isConnected.collectLatest { isConnected ->
+                Log.d(TAG, "GithubApp: $isConnected")
+                if (isConnected) {
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                    snackbarHostState.showSnackbar(
+                        message = "Koneksi kembali normal",
+                        duration = SnackbarDuration.Short
+                    )
+                } else {
+                    snackbarHostState.showSnackbar(
+                        message = "Tidak ada koneksi internet",
+                        withDismissAction = false,
+                        duration = SnackbarDuration.Indefinite
+                    )
+                }
+            }
+        }
+
+
         val topLevelDestination = appState.topLevelDestinations
         val currentDestination = appState.currentDestination
         val showBottomNav =

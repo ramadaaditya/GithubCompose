@@ -24,6 +24,4 @@ abstract class RepositoryModule {
     abstract fun bindTrendingRepository(
         trendingRepository: TrendingRepository
     ): ITrendingRepository
-
-
 }

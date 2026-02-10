@@ -17,15 +17,18 @@ import com.learn.githubusercompose.core.navigation.TopLevelDestination
 import com.learn.githubusercompose.presentation.home.navigation.navigateToHome
 import com.learn.githubusercompose.presentation.notification.navigateToFavorite
 import com.learn.githubusercompose.presentation.profile.navigateToSettings
+import kotlinx.coroutines.flow.StateFlow
 import kotlin.reflect.KClass
 
 @Composable
 fun rememberGithubAppState(
+    connectionFlow: StateFlow<Boolean>,
     navController: NavHostController = rememberNavController()
 ): GithubAppState {
-    return remember(navController) {
+    return remember(connectionFlow, navController) {
         GithubAppState(
-            navController,
+            connectionFlow = connectionFlow,
+            navController = navController
         )
     }
 }
@@ -33,7 +36,9 @@ fun rememberGithubAppState(
 @Stable
 class GithubAppState(
     val navController: NavHostController,
+    connectionFlow: StateFlow<Boolean>,
 ) {
+    val isConnected = connectionFlow
     private val previousDestination = mutableStateOf<NavDestination?>(null)
     val currentDestination: NavDestination?
         @Composable get() {

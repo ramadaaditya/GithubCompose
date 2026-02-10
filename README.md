@@ -1,4 +1,30 @@
-Jetpack Compose Learn Project
-<img width="1080" height="2400" alt="image" src="https://github.com/user-attachments/assets/c4894277-1076-41f6-9c4c-57062bb91ff8" />
-<img width="1080" height="2400" alt="image" src="https://github.com/user-attachments/assets/325e4dea-090f-46aa-8803-0ff00bc3a325" />
-<img width="1080" height="2400" alt="image" src="https://github.com/user-attachments/assets/0e7392c5-523e-48c8-a372-2453421fbbbf" />
+# Jetpack Compose Learn Project
+
+A project-based learning repository to understand modern Android development using **Jetpack Compose**, **Kotlin**, and **recommended Android architecture**, built step by step in a simple and practical way.
+
+This project is intentionally designed to be **stable, minimal, and beginner-friendly**, without unnecessary complexity found in large reference projects like *Now in Android*.
+
+---
+
+## 🎯 Project Goals
+
+- Learn Jetpack Compose from real use cases
+- Understand state management with ViewModel & StateFlow
+- Apply MVVM architecture gradually
+- Practice clean and readable code
+- Build Android apps using a project-based learning approach
+
+---
+
+## 🧱 Tech Stack
+
+- **Language**: Kotlin
+- **UI**: Jetpack Compose
+- **Architecture**: MVVM
+- **State Management**: StateFlow
+- **Async**: Kotlin Coroutines
+- **Navigation**: Navigation Compose
+- **Dependency Injection**: (Optional / Planned)
+- **Persistence**: (Optional / Planned)
+
+---
