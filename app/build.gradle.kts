@@ -28,9 +28,9 @@ android {
         val localProps = Properties().apply {
             load(rootProject.file("local.properties").inputStream())
         }
-        val githubToken = localProps.getProperty("GITHUB_TOKEN") ?: ""
+//        val githubToken = localProps.getProperty("GITHUB_TOKEN") ?: ""
         val baseUrl = localProps.getProperty("BASE_URL") ?: ""
-        buildConfigField("String", "GITHUB_TOKEN", "\"$githubToken\"")
+//        buildConfigField("String", "GITHUB_TOKEN", "\"$githubToken\"")
         buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
     }
 
@@ -107,6 +107,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.lottie.compose)
 
-    implementation("androidx.compose.animation:animation:1.10.1")
+    implementation(libs.androidx.compose.animation)
+
+    implementation(libs.androidx.datastore.preferences)
+
+    implementation(libs.androidx.security.crypto)
 
 }

@@ -29,7 +29,6 @@ class MainActivity : ComponentActivity() {
                 val appState = rememberGithubAppState(
                     viewModel.isConnected
                 )
-
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

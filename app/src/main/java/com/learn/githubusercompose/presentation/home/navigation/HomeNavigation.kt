@@ -3,6 +3,8 @@ package com.learn.githubusercompose.presentation.home.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.learn.githubusercompose.core.navigation.ScreenRoute
+import kotlinx.serialization.Serializable
+
 
 fun NavController.navigateToHome(navOptions: NavOptions? = null) =
     if (navOptions != null) {
@@ -18,4 +20,5 @@ fun NavController.navigateToDetail(navOptions: NavOptions? = null) =
     } else {
         navigate(ScreenRoute.DetailUserRoute)
     }
+
 

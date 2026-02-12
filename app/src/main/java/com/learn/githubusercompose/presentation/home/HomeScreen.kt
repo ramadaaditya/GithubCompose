@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -41,10 +40,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.learn.githubusercompose.core.common.ErrorType
 import com.learn.githubusercompose.core.common.UiState
 import com.learn.githubusercompose.core.utils.languageColor
 import com.learn.githubusercompose.domain.model.TrendingRepo
 import com.learn.githubusercompose.domain.model.UserItemUiState
+import com.learn.githubusercompose.ui.components.EmptyState
 import com.learn.githubusercompose.ui.components.Search
 import com.learn.githubusercompose.ui.components.SearchUserItem
 
@@ -57,6 +58,7 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var query by rememberSaveable { mutableStateOf("") }
+
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -68,7 +70,7 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             onQueryChange = { newQuery ->
-
+                query = newQuery
             },
             onSearch = {
                 viewModel.searchUsers(query)
@@ -83,10 +85,21 @@ fun HomeScreen(
         ) {
             when (val state = uiState) {
                 is UiState.Error -> {
-                    Text(
-                        text = state.errorMessage,
-                        color = MaterialTheme.colorScheme.error,
-                    )
+                    when (state.errorType) {
+                        ErrorType.UNAUTHORIZED -> {
+                            Text(
+                                text = "Github Tokennya engga valid bang",
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+
+                        else -> {
+                            Text(
+                                text = state.errorMessage,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                    }
                 }
 
                 is UiState.Loading -> {
@@ -190,7 +203,6 @@ fun SectionHeader(
                 style = MaterialTheme.typography.labelMedium.copy(
                     color = MaterialTheme.colorScheme.primary
                 ),
-//                modifier = Modifier.clickable {}
             )
         }
     }
@@ -287,27 +299,5 @@ fun TrendingRepoCard(trendingRepo: TrendingRepo, modifier: Modifier = Modifier) 
                 )
             }
         }
-    }
-}
-
-@Composable
-fun EmptyState(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(48.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            "No Data Found",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }

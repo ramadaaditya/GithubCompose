@@ -1,4 +1,4 @@
-package com.learn.githubusercompose.presentation.notification
+package com.learn.githubusercompose.presentation.favorite
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

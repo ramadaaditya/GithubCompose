@@ -2,8 +2,10 @@ package com.learn.githubusercompose.di
 
 import com.learn.githubusercompose.data.repository.TrendingRepository
 import com.learn.githubusercompose.data.repository.UserRepository
+import com.learn.githubusercompose.data.settings.SettingsRepositoryImpl
 import com.learn.githubusercompose.domain.repository.ITrendingRepository
 import com.learn.githubusercompose.domain.repository.IUserRepository
+import com.learn.githubusercompose.domain.repository.SettingsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -24,4 +26,10 @@ abstract class RepositoryModule {
     abstract fun bindTrendingRepository(
         trendingRepository: TrendingRepository
     ): ITrendingRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSettingsRepository(
+        implSettingsRepository: SettingsRepositoryImpl
+    ): SettingsRepository
 }

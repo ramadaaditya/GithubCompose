@@ -1,6 +1,10 @@
 package com.learn.githubusercompose.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.learn.githubusercompose.BuildConfig
 import com.learn.githubusercompose.data.local.dao.DetailUserDao
@@ -9,6 +13,7 @@ import com.learn.githubusercompose.data.local.dao.SearchUserDao
 import com.learn.githubusercompose.data.local.dao.TrendingRepoDao
 import com.learn.githubusercompose.data.local.database.UserDatabase
 import com.learn.githubusercompose.data.remote.api.ApiServices
+import com.learn.githubusercompose.data.remote.api.AuthInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +30,22 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+
+    private const val DATASTORE_NAME = "secure_settings"
+
+    @Provides
+    @Singleton
+    fun provideDataStore(
+        @ApplicationContext context: Context
+    ): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = {
+                context.preferencesDataStoreFile(DATASTORE_NAME)
+            }
+        )
+    }
+
     @Singleton
     @Provides
     fun provideApiServices(
@@ -36,7 +57,9 @@ object AppModule {
     @Singleton
     @Provides
     fun provideOkHttpClient(
+        authInterceptor: AuthInterceptor
     ): OkHttpClient {
+
         val loggingInterceptor = if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         } else {
@@ -44,16 +67,8 @@ object AppModule {
         }
 
         return OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val original = chain.request()
-                val requestBuilder = original.newBuilder()
-                    .addHeader("Authorization", "Bearer ${BuildConfig.GITHUB_TOKEN}")
-                    .addHeader("Accept", "application/json")
-                    .build()
-                chain.proceed(requestBuilder)
-            }
+            .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
-
             .connectTimeout(1, TimeUnit.MINUTES)
             .readTimeout(1, TimeUnit.MINUTES)
             .build()

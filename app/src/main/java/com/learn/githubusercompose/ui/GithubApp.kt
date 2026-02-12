@@ -27,6 +27,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.learn.githubusercompose.core.activity.LocalAppSnackbarHostState
 import com.learn.githubusercompose.core.navigation.AppNavHost
+import com.learn.githubusercompose.core.navigation.ScreenRoute
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -35,11 +36,16 @@ fun GithubApp(
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+    val currentDestination = appState.currentDestination
+
+    val isOnSplashScreen = currentDestination?.hasRoute<ScreenRoute.SplashRoute>() == true
 
     CompositionLocalProvider(LocalAppSnackbarHostState provides snackbarHostState) {
         LaunchedEffect(Unit) {
             appState.isConnected.collectLatest { isConnected ->
                 Log.d(TAG, "GithubApp: $isConnected")
+
+                if (isOnSplashScreen) return@collectLatest
                 if (isConnected) {
                     snackbarHostState.currentSnackbarData?.dismiss()
                     snackbarHostState.showSnackbar(

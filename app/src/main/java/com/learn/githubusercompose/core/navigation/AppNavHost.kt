@@ -8,9 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.learn.githubusercompose.presentation.SplashScreen
 import com.learn.githubusercompose.presentation.detail.DetailScreen
+import com.learn.githubusercompose.presentation.favorite.FavoriteScreen
 import com.learn.githubusercompose.presentation.home.HomeScreen
-import com.learn.githubusercompose.presentation.notification.FavoriteScreen
-import com.learn.githubusercompose.presentation.profile.SettingsScreen
+import com.learn.githubusercompose.presentation.settings.navigation.settingsGraph
 import com.learn.githubusercompose.ui.GithubAppState
 
 @Composable
@@ -36,6 +36,10 @@ fun AppNavHost(
                 }
             )
         }
+
+        settingsGraph(
+            navController = navController
+        )
         composable<ScreenRoute.SplashRoute>(
             exitTransition = {
                 fadeOut(animationSpec = tween(durationMillis = 500))
@@ -49,13 +53,9 @@ fun AppNavHost(
                 }
             )
         }
-        composable<ScreenRoute.SettingsRoute> {
-            SettingsScreen()
-        }
         composable<ScreenRoute.FavoriteRoute> {
             FavoriteScreen()
         }
-
         composable<ScreenRoute.DetailUserRoute> {
             DetailScreen(
                 navigateBack = {

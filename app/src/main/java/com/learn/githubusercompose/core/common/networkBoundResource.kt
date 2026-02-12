@@ -1,6 +1,7 @@
 package com.learn.githubusercompose.core.common
 
 import com.learn.githubusercompose.data.Resource
+import com.learn.githubusercompose.data.mapThrowableToErrorType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
@@ -13,20 +14,23 @@ inline fun <ResultType, RequestType> networkBoundResource(
     crossinline saveFetchResult: suspend (RequestType) -> Unit,
     crossinline shouldFetch: (ResultType) -> Boolean = { true }
 ): Flow<Resource<ResultType>> = flow {
-    emit(Resource.Loading(null))
+    emit(Resource.Loading())
     val data = query().first()
     if (shouldFetch(data)) {
-        emit(Resource.Loading(data))
+        emit(Resource.Loading())
         try {
             val response = fetch()
             saveFetchResult(response)
         } catch (throwable: Throwable) {
+            val errorType = mapThrowableToErrorType(throwable)
+
             emit(
                 Resource.Error(
                     throwable.message ?: "Unknown Error",
-                    data
+                    errorType = errorType
                 )
             )
+            return@flow
         }
     }
 

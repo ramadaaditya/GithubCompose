@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.learn.githubusercompose.core.common.ErrorType
 import com.learn.githubusercompose.core.common.UiState
 import com.learn.githubusercompose.core.navigation.ScreenRoute
 import com.learn.githubusercompose.data.Resource
@@ -87,7 +88,10 @@ private fun Resource<DetailUser>.toDetailUiState(): UiState<DetailUiState> {
                         repoCount = user.repoCount
                     )
                 )
-            } ?: UiState.Error("User data is empty")
+            } ?: UiState.Error(
+                errorMessage = "User data is empty",
+                errorType = ErrorType.UNKNOWN
+            )
         }
     }
 }
