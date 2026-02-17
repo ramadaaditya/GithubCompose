@@ -8,9 +8,10 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.learn.githubusercompose.BuildConfig
 import com.learn.githubusercompose.data.local.dao.DetailUserDao
+import com.learn.githubusercompose.data.local.dao.FavoriteUserDao
 import com.learn.githubusercompose.data.local.dao.FollowDao
-import com.learn.githubusercompose.data.local.dao.SearchUserDao
 import com.learn.githubusercompose.data.local.dao.TrendingRepoDao
+import com.learn.githubusercompose.data.local.dao.UserDao
 import com.learn.githubusercompose.data.local.database.UserDatabase
 import com.learn.githubusercompose.data.remote.api.ApiServices
 import com.learn.githubusercompose.data.remote.api.AuthInterceptor
@@ -30,7 +31,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
 
     private const val DATASTORE_NAME = "secure_settings"
 
@@ -87,7 +87,7 @@ object AppModule {
     }
 
     @Provides
-    fun provideUserDAO(db: UserDatabase): SearchUserDao {
+    fun provideUserDAO(db: UserDatabase): UserDao {
         return db.searchDao()
     }
 
@@ -99,6 +99,11 @@ object AppModule {
     @Provides
     fun provideFollowDAO(db: UserDatabase): FollowDao {
         return db.followDao()
+    }
+
+    @Provides
+    fun provideFavoriteUserDAO(db: UserDatabase): FavoriteUserDao {
+        return db.favoriteUserDao()
     }
 
 

@@ -4,21 +4,23 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.learn.githubusercompose.core.common.ErrorType
 import com.learn.githubusercompose.core.common.UiState
 import com.learn.githubusercompose.core.navigation.ScreenRoute
-import com.learn.githubusercompose.data.Resource
+import com.learn.githubusercompose.data.repository.UserRepository
 import com.learn.githubusercompose.domain.model.DetailUser
-import com.learn.githubusercompose.domain.model.UserItemUiState
-import com.learn.githubusercompose.domain.repository.IUserRepository
+import com.learn.githubusercompose.domain.model.Result
+import com.learn.githubusercompose.domain.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class DetailUiState(
+    val id: Int,
+    val username: String,
     val image: String,
     val name: String,
     val bio: String,
@@ -29,11 +31,34 @@ data class DetailUiState(
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    repository: IUserRepository,
+    private val repository: UserRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val route = savedStateHandle.toRoute<ScreenRoute.DetailUserRoute>()
     private val usernameArg = route.username
+
+    val isFavorite: StateFlow<Boolean> =
+        repository.getUsersStream()
+            .map { users ->
+                users.firstOrNull() { it.username == usernameArg }?.isFavorite ?: false
+
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = false
+            )
+
+
+    fun toggleFavorite(user: User) {
+        viewModelScope.launch {
+            if (isFavorite.value) {
+                repository.deleteFavorite(user.id)
+            } else {
+                repository.insertFavorite(user)
+            }
+        }
+    }
 
     val uiState: StateFlow<UiState<DetailUiState>> =
         repository.getDetailUser(usernameArg)
@@ -44,7 +69,7 @@ class DetailViewModel @Inject constructor(
                 initialValue = UiState.Loading
             )
 
-    val follower: StateFlow<UiState<List<UserItemUiState>>> =
+    val follower: StateFlow<UiState<List<User>>> =
         repository.getFollowers(usernameArg)
             .map { resource ->
 
@@ -56,7 +81,7 @@ class DetailViewModel @Inject constructor(
                 initialValue = UiState.Loading
             )
 
-    val following: StateFlow<UiState<List<UserItemUiState>>> =
+    val following: StateFlow<UiState<List<User>>> =
         repository.getFollowing(usernameArg)
             .map { resource ->
                 resource.toListUiState()
@@ -69,15 +94,15 @@ class DetailViewModel @Inject constructor(
 }
 
 
-private fun Resource<DetailUser>.toDetailUiState(): UiState<DetailUiState> {
+private fun Result<DetailUser>.toDetailUiState(): UiState<DetailUiState> {
     return when (this) {
-        is Resource.Loading -> UiState.Loading
-        is Resource.Error -> UiState.Error(
+        is Result.Loading -> UiState.Loading
+        is Result.Error -> UiState.Error(
             errorMessage = message ?: "Unknown error occurred"
         )
 
-        is Resource.Success -> {
-            data?.let { user ->
+        is Result.Success -> {
+            data.let { user ->
                 UiState.Success(
                     DetailUiState(
                         image = user.avatarUrl,
@@ -85,25 +110,24 @@ private fun Resource<DetailUser>.toDetailUiState(): UiState<DetailUiState> {
                         bio = user.bio,
                         follower = user.followers,
                         following = user.following,
-                        repoCount = user.repoCount
+                        repoCount = user.repoCount,
+                        id = user.id,
+                        username = user.username,
                     )
                 )
-            } ?: UiState.Error(
-                errorMessage = "User data is empty",
-                errorType = ErrorType.UNKNOWN
-            )
+            }
         }
     }
 }
 
-private fun Resource<List<UserItemUiState>>.toListUiState(): UiState<List<UserItemUiState>> {
+private fun Result<List<User>>.toListUiState(): UiState<List<User>> {
     return when (this) {
-        is Resource.Loading -> UiState.Loading
-        is Resource.Error -> UiState.Error(
+        is Result.Loading -> UiState.Loading
+        is Result.Error -> UiState.Error(
             errorMessage = message ?: "Unknown error occurred"
         )
 
-        is Resource.Success -> UiState.Success(data ?: emptyList())
+        is Result.Success -> UiState.Success(data ?: emptyList())
     }
 }
 

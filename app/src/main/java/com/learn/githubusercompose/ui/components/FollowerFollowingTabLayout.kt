@@ -1,7 +1,6 @@
 package com.learn.githubusercompose.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,18 +24,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.learn.githubusercompose.core.common.UiState
-import com.learn.githubusercompose.domain.model.UserItemUiState
+import com.learn.githubusercompose.domain.model.User
 import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
 fun FollowerFollowingTabLayout(
     modifier : Modifier = Modifier,
-    followerState: UiState<List<UserItemUiState>>,
-    followingState: UiState<List<UserItemUiState>>
+    followerState: UiState<List<User>>,
+    followingState: UiState<List<User>>
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Follower", "Following")
@@ -88,7 +86,7 @@ fun FollowerFollowingTabLayout(
 
 @Composable
 fun FollowerList(
-    state: UiState<List<UserItemUiState>>
+    state: UiState<List<User>>
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -122,7 +120,7 @@ fun FollowerList(
 
 @Composable
 fun FollowingList(
-    state: UiState<List<UserItemUiState>>
+    state: UiState<List<User>>
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),

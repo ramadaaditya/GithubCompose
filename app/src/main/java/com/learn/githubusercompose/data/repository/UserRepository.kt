@@ -3,90 +3,82 @@ package com.learn.githubusercompose.data.repository
 import android.content.ContentValues.TAG
 import android.util.Log
 import com.learn.githubusercompose.core.common.networkBoundResource
-import com.learn.githubusercompose.data.Resource
-import com.learn.githubusercompose.data.local.dao.DetailUserDao
-import com.learn.githubusercompose.data.local.dao.FollowDao
-import com.learn.githubusercompose.data.local.dao.SearchUserDao
-import com.learn.githubusercompose.data.remote.api.ApiServices
+import com.learn.githubusercompose.data.local.entity.FavoriteUserEntity
+import com.learn.githubusercompose.data.remote.RemoteDataSource
 import com.learn.githubusercompose.data.remote.dto.toDomain
+import com.learn.githubusercompose.data.remote.dto.toDomainUser
 import com.learn.githubusercompose.data.remote.dto.toEntity
 import com.learn.githubusercompose.data.remote.dto.toFollowerEntity
 import com.learn.githubusercompose.data.remote.dto.toFollowingEntity
 import com.learn.githubusercompose.data.remote.dto.toUserDomains
-import com.learn.githubusercompose.data.remote.dto.toUserEntities
+import com.learn.githubusercompose.data.remote.dto.toUserEntity
 import com.learn.githubusercompose.domain.model.DetailUser
-import com.learn.githubusercompose.domain.model.UserItemUiState
+import com.learn.githubusercompose.domain.model.Result
+import com.learn.githubusercompose.domain.model.User
 import com.learn.githubusercompose.domain.repository.IUserRepository
+import com.learn.githubusercompose.domain.source.LocalDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class UserRepository @Inject constructor(
-    private val apiService: ApiServices,
-    private val userDao: SearchUserDao,
-    private val detailDao: DetailUserDao,
-    private val followDao: FollowDao
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource,
 ) : IUserRepository {
-
-    override fun searchUsers(query: String): Flow<Resource<List<UserItemUiState>>> = flow {
-        try {
-            val response = apiService.searchUser(query)
-            val data = response.items.toUserEntities()
-            val usersFavorite = userDao.getFavoriteUserIds()
-            val insertFavorite = data.map { user ->
-                if (usersFavorite.contains(user.id)) {
-                    user.copy(isFavorite = true)
-                } else {
-                    user
-                }
-            }
-            userDao.deleteAllNonFavorites()
-            userDao.insertUsers(insertFavorite)
-            val domain = data.toUserDomains()
-            emit(Resource.Success(domain))
-        } catch (e: Exception) {
-            Log.e(TAG, "searchUsers: Terjadi kesalahan ${e.localizedMessage}")
-            emit(Resource.Error(e.localizedMessage ?: "Terjadi kesalahan yang tidak diketahui"))
-        }
-    }
-
-    override fun getDetailUser(username: String): Flow<Resource<DetailUser>> {
+    override fun searchUsers(query: String): Flow<Result<List<User>>> {
         return networkBoundResource(
             query = {
-                detailDao.getDetailUser(username).map { entity ->
+                localDataSource.getAllUsers().map { entities ->
+                    entities.map { it.toDomainUser() }
+                }
+            },
+            fetch = {
+                remoteDataSource.searchUsers(query)
+            },
+            saveFetchResult = { response ->
+                val entities = response.items.map { it.toUserEntity() }
+                localDataSource.replaceUsers(entities)
+            }
+        )
+    }
+
+    override fun getDetailUser(username: String): Flow<Result<DetailUser>> {
+        return networkBoundResource(
+            query = {
+                localDataSource.getDetailUser(username).map { entity ->
                     entity.toDomain()
                 }
             },
             fetch = {
-                apiService.getDetailUser(username)
+                remoteDataSource.getDetailUser(username)
             },
             saveFetchResult = { response ->
                 val entity = response.toEntity()
-                detailDao.insertDetailUser(entity)
+                localDataSource.insertDetailUser(entity)
             },
+            shouldFetch = { data ->
+                data == null
+            }
         )
     }
 
-    override fun getFollowing(username: String): Flow<Resource<List<UserItemUiState>>> {
+    override fun getFollowing(username: String): Flow<Result<List<User>>> {
         return networkBoundResource(
             query = {
-                followDao.getFollowing(username).map { entities ->
-                    Log.d(TAG, "getFollowing: ${entities.size}")
+                localDataSource.getFollowing(username).map { entities ->
                     entities.map { it.toDomain() }
                 }
             },
             fetch = {
-                apiService.getFollowing(username)
+                remoteDataSource.getFollowing(username)
             },
             saveFetchResult = { response ->
                 val entity = response.map {
                     it.toFollowingEntity(owner = username)
                 }
-                followDao.deleteFollowingByUsername(username)
-                followDao.insertFollowing(entity)
+                localDataSource.updateFollowing(username, entity)
             },
             shouldFetch = { data ->
                 data.isEmpty()
@@ -94,22 +86,22 @@ class UserRepository @Inject constructor(
         )
     }
 
-    override fun getFollowers(username: String): Flow<Resource<List<UserItemUiState>>> {
+    override fun getFollowers(username: String): Flow<Result<List<User>>> {
         return networkBoundResource(
             query = {
-                followDao.getFollowers(username).map { entities ->
+                localDataSource.getFollowers(username).map { entities ->
                     Log.d(TAG, "getFollowing: ${entities.size}")
                     entities.map { it.toDomain() }
                 }
             },
             fetch = {
-                apiService.getFollowers(username)
+                remoteDataSource.getFollowers(username)
             },
             saveFetchResult = { response ->
                 val entity = response.map {
                     it.toFollowerEntity(owner = username)
                 }
-                followDao.insertFollowers(entity)
+                localDataSource.updateFollowers(username, entity)
             },
             shouldFetch = { data ->
                 data.isEmpty()
@@ -117,10 +109,44 @@ class UserRepository @Inject constructor(
         )
     }
 
+    override fun getAllFavorites(): Flow<Result<List<User>>> {
+        return localDataSource.getAllFavorites()
+            .map { entities ->
+                val users = entities.map {
+                    it.toDomain()
+                }
+                Result.Success(users) as Result<List<User>>
+            }
+    }
 
-    fun getUsersStream(): Flow<List<UserItemUiState>> {
-        return userDao.getAllUser().map { entities ->
+    override suspend fun insertFavorite(user: User) {
+        localDataSource.insertFavorite(user.toFavoriteEntity())
+    }
+
+    override suspend fun deleteFavorite(id: Int) {
+        localDataSource.deleteFavoriteById(id)
+    }
+
+    fun getUsersStream(): Flow<List<User>> {
+        return localDataSource.getAllUsers().map { entities ->
             entities.toUserDomains()
         }
     }
+}
+
+fun User.toFavoriteEntity(): FavoriteUserEntity {
+    return FavoriteUserEntity(
+        id = id,
+        username = username,
+        avatarUrl = avatarUrl
+    )
+}
+
+fun FavoriteUserEntity.toDomain(): User {
+    return User(
+        id = id,
+        username = username,
+        avatarUrl = avatarUrl,
+        isFavorite = true
+    )
 }

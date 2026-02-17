@@ -1,7 +1,7 @@
 package com.learn.githubusercompose.data.repository
 
 import com.learn.githubusercompose.core.common.networkBoundResource
-import com.learn.githubusercompose.data.Resource
+import com.learn.githubusercompose.domain.model.Result
 import com.learn.githubusercompose.data.local.dao.TrendingRepoDao
 import com.learn.githubusercompose.data.remote.api.ApiServices
 import com.learn.githubusercompose.data.remote.dto.toDomain
@@ -23,7 +23,7 @@ class TrendingRepository @Inject constructor(
         private const val ITEM_LIMIT = 10
     }
 
-    override fun getTrendingRepositories(query: String): Flow<Resource<List<TrendingRepo>>> {
+    override fun getTrendingRepositories(query: String): Flow<Result<List<TrendingRepo>>> {
         return networkBoundResource(
             query = {
                 dao.getAllTrendingRepo().map { entities ->

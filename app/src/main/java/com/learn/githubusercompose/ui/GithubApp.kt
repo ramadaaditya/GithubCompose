@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -113,7 +114,7 @@ fun GithubApp(
         ) { innerPadding ->
             AppNavHost(
                 appState = appState,
-//                modifier = modifier.padding(innerPadding)
+                innerPadding = innerPadding
             )
         }
     }

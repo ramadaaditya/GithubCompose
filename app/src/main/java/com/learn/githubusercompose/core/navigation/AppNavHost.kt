@@ -3,6 +3,7 @@ package com.learn.githubusercompose.core.navigation
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,6 +17,7 @@ import com.learn.githubusercompose.ui.GithubAppState
 @Composable
 fun AppNavHost(
     appState: GithubAppState,
+    innerPadding: PaddingValues
 ) {
     val navController = appState.navController
     NavHost(
@@ -33,7 +35,8 @@ fun AppNavHost(
             HomeScreen(
                 navigateToDetail = { username ->
                     navController.navigate(ScreenRoute.DetailUserRoute(username))
-                }
+                },
+                innerPadding = innerPadding
             )
         }
 
@@ -54,7 +57,9 @@ fun AppNavHost(
             )
         }
         composable<ScreenRoute.FavoriteRoute> {
-            FavoriteScreen()
+            FavoriteScreen(
+                onClick = {}
+            )
         }
         composable<ScreenRoute.DetailUserRoute> {
             DetailScreen(

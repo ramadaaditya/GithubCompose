@@ -3,7 +3,7 @@ package com.learn.githubusercompose.data.remote.dto
 import com.learn.githubusercompose.data.local.entity.DetailUserEntity
 import com.learn.githubusercompose.data.local.entity.FollowerEntity
 import com.learn.githubusercompose.data.local.entity.FollowingEntity
-import com.learn.githubusercompose.data.local.entity.SearchUserEntity
+import com.learn.githubusercompose.data.local.entity.UserEntity
 import com.learn.githubusercompose.data.local.entity.TrendingRepoEntity
 import com.learn.githubusercompose.data.remote.response.DetailUserResponse
 import com.learn.githubusercompose.data.remote.response.FollowResponseItem
@@ -11,18 +11,26 @@ import com.learn.githubusercompose.data.remote.response.ItemsItem
 import com.learn.githubusercompose.data.remote.response.RepositoryItem
 import com.learn.githubusercompose.domain.model.DetailUser
 import com.learn.githubusercompose.domain.model.TrendingRepo
-import com.learn.githubusercompose.domain.model.UserItemUiState
+import com.learn.githubusercompose.domain.model.User
 
-fun ItemsItem?.toUserEntity(): SearchUserEntity {
-    return SearchUserEntity(
+fun ItemsItem?.toUserEntity(): UserEntity {
+    return UserEntity(
         id = this?.id ?: 0,
         username = this?.login ?: "Unknown User",
         avatarUrl = this?.avatarUrl ?: "",
     )
 }
 
-fun SearchUserEntity.toDomainUser(): UserItemUiState {
-    return UserItemUiState(
+fun ItemsItem.toDomain(): User {
+    return User(
+        id = this.id ?: 0,
+        username = this.login,
+        avatarUrl = this.avatarUrl,
+    )
+}
+
+fun UserEntity.toDomainUser(): User {
+    return User(
         id = this.id,
         username = this.username,
         avatarUrl = this.avatarUrl ?: "",
@@ -30,8 +38,8 @@ fun SearchUserEntity.toDomainUser(): UserItemUiState {
     )
 }
 
-fun FollowingEntity.toDomain(): UserItemUiState {
-    return UserItemUiState(
+fun FollowingEntity.toDomain(): User {
+    return User(
         id = this.id,
         username = this.username,
         avatarUrl = this.avatarUrl,
@@ -39,8 +47,8 @@ fun FollowingEntity.toDomain(): UserItemUiState {
     )
 }
 
-fun FollowerEntity.toDomain(): UserItemUiState {
-    return UserItemUiState(
+fun FollowerEntity.toDomain(): User {
+    return User(
         id = this.id,
         username = this.username,
         avatarUrl = this.avatarUrl,
@@ -106,8 +114,8 @@ fun TrendingRepoEntity.toDomain(): TrendingRepo {
     )
 }
 
-fun FollowResponseItem.toDomain(): UserItemUiState {
-    return UserItemUiState(
+fun FollowResponseItem.toDomain(): User {
+    return User(
         id = this.id ?: 0,
         username = this.login ?: "Unknown",
         avatarUrl = this.avatarUrl ?: "Avatar Not Found",
@@ -132,15 +140,15 @@ fun FollowResponseItem.toFollowerEntity(owner: String): FollowerEntity {
     )
 }
 
-fun List<ItemsItem>?.toUserEntities(): List<SearchUserEntity> {
+fun List<ItemsItem>?.toUserEntities(): List<UserEntity> {
     return this?.map { it.toUserEntity() } ?: emptyList()
 }
 
-fun List<FollowResponseItem>?.toFollowDomain(): List<UserItemUiState> {
+fun List<FollowResponseItem>?.toFollowDomain(): List<User> {
     return this?.map { it.toDomain() } ?: emptyList()
 }
 
-fun List<SearchUserEntity>?.toUserDomains(): List<UserItemUiState> {
+fun List<UserEntity>?.toUserDomains(): List<User> {
     return this?.map { it.toDomainUser() } ?: emptyList()
 }
 

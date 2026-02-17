@@ -44,7 +44,7 @@ import com.learn.githubusercompose.core.common.ErrorType
 import com.learn.githubusercompose.core.common.UiState
 import com.learn.githubusercompose.core.utils.languageColor
 import com.learn.githubusercompose.domain.model.TrendingRepo
-import com.learn.githubusercompose.domain.model.UserItemUiState
+import com.learn.githubusercompose.domain.model.User
 import com.learn.githubusercompose.ui.components.EmptyState
 import com.learn.githubusercompose.ui.components.Search
 import com.learn.githubusercompose.ui.components.SearchUserItem
@@ -54,7 +54,8 @@ import com.learn.githubusercompose.ui.components.SearchUserItem
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
-    navigateToDetail: (String) -> Unit
+    navigateToDetail: (String) -> Unit,
+    innerPadding: PaddingValues
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var query by rememberSaveable { mutableStateOf("") }
@@ -112,7 +113,10 @@ fun HomeScreen(
                         trendingList = state.data.trendingRepo ?: emptyList(),
                         onItemClick = { username ->
                             navigateToDetail(username)
-                        }
+                        },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
                     )
                 }
             }
@@ -124,12 +128,11 @@ fun HomeScreen(
 @Composable
 fun HomeDashboardContent(
     trendingList: List<TrendingRepo>,
-    userList: List<UserItemUiState>,
+    userList: List<User>,
     onItemClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        contentPadding = PaddingValues(bottom = 24.dp),
         modifier = modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp)

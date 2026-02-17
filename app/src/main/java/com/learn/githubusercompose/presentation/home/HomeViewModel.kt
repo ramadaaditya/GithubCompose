@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.learn.githubusercompose.core.common.UiState
 import com.learn.githubusercompose.core.common.UiState.Success
-import com.learn.githubusercompose.data.Resource
+import com.learn.githubusercompose.domain.model.Result
 import com.learn.githubusercompose.data.repository.TrendingRepository
 import com.learn.githubusercompose.data.repository.UserRepository
 import com.learn.githubusercompose.domain.model.TrendingRepo
-import com.learn.githubusercompose.domain.model.UserItemUiState
+import com.learn.githubusercompose.domain.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 
 data class HomeUiState(
-    val users: List<UserItemUiState> = emptyList(),
+    val users: List<User> = emptyList(),
     val trendingRepo: List<TrendingRepo>? = emptyList(),
 )
 
@@ -44,9 +44,9 @@ class HomeViewModel @Inject constructor(
             return@combine UiState.Error(searchState.errorMessage)
         }
         when (trendingState) {
-            is Resource.Error -> UiState.Error(trendingState.message ?: "Unknown message")
-            is Resource.Loading -> UiState.Loading
-            is Resource.Success -> {
+            is Result.Error -> UiState.Error(trendingState.message ?: "Unknown message")
+            is Result.Loading -> UiState.Loading
+            is Result.Success -> {
                 val combineData = HomeUiState(
                     users = users,
                     trendingRepo = trendingState.data
@@ -67,16 +67,16 @@ class HomeViewModel @Inject constructor(
             userRepository.searchUsers(newQuery)
                 .collect { result ->
                     when (result) {
-                        is Resource.Error -> {
+                        is Result.Error -> {
                             _searchState.value = UiState.Error(result.message ?: "Unknown error")
                         }
 
-                        is Resource.Loading -> {
+                        is Result.Loading -> {
                             _searchState.value = UiState.Loading
                         }
 
 
-                        is Resource.Success -> {
+                        is Result.Success -> {
                             _searchState.value = Success(Unit)
                         }
                     }
