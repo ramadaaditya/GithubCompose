@@ -1,10 +1,11 @@
 package com.learn.githubusercompose.data.remote.dto
 
 import com.learn.githubusercompose.data.local.entity.DetailUserEntity
+import com.learn.githubusercompose.data.local.entity.FavoriteUserEntity
 import com.learn.githubusercompose.data.local.entity.FollowerEntity
 import com.learn.githubusercompose.data.local.entity.FollowingEntity
-import com.learn.githubusercompose.data.local.entity.UserEntity
 import com.learn.githubusercompose.data.local.entity.TrendingRepoEntity
+import com.learn.githubusercompose.data.local.entity.UserEntity
 import com.learn.githubusercompose.data.remote.response.DetailUserResponse
 import com.learn.githubusercompose.data.remote.response.FollowResponseItem
 import com.learn.githubusercompose.data.remote.response.ItemsItem
@@ -56,18 +57,19 @@ fun FollowerEntity.toDomain(): User {
     )
 }
 
-fun DetailUserEntity?.toDomain(): DetailUser {
+fun DetailUserEntity?.toDomain(): DetailUser? {
+    if (this == null) return null
     return DetailUser(
-        id = this?.id ?: 0,
-        following = this?.following ?: 0,
-        followers = this?.followers ?: 0,
-        name = this?.name ?: "Unknown",
-        username = this?.username ?: "Unknown",
-        repoCount = this?.repoCount ?: 0,
-        bio = this?.bio ?: "Bio is not set",
-        email = this?.email ?: "Email not set",
-        location = this?.location ?: "Location unknown",
-        avatarUrl = this?.avatarUrl ?: "Unknown",
+        id = this.id,
+        following = this.following,
+        followers = this.followers,
+        name = this.name,
+        username = this.username,
+        repoCount = this.repoCount,
+        bio = this.bio,
+        email = this.email,
+        location = this.location,
+        avatarUrl = this.avatarUrl,
     )
 }
 
@@ -182,5 +184,23 @@ fun DetailUserResponse.toDetailUserDomain(): DetailUser {
         location = this.location ?: "Location unknown",
         avatarUrl = this.avatarUrl ?: "Unknown",
         id = this.id ?: 0
+    )
+}
+
+
+fun User.toFavoriteEntity(): FavoriteUserEntity {
+    return FavoriteUserEntity(
+        id = id,
+        username = username,
+        avatarUrl = avatarUrl
+    )
+}
+
+fun FavoriteUserEntity.toDomain(): User {
+    return User(
+        id = id,
+        username = username,
+        avatarUrl = avatarUrl,
+        isFavorite = true
     )
 }

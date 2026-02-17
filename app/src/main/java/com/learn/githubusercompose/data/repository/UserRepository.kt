@@ -3,11 +3,11 @@ package com.learn.githubusercompose.data.repository
 import android.content.ContentValues.TAG
 import android.util.Log
 import com.learn.githubusercompose.core.common.networkBoundResource
-import com.learn.githubusercompose.data.local.entity.FavoriteUserEntity
 import com.learn.githubusercompose.data.remote.RemoteDataSource
 import com.learn.githubusercompose.data.remote.dto.toDomain
 import com.learn.githubusercompose.data.remote.dto.toDomainUser
 import com.learn.githubusercompose.data.remote.dto.toEntity
+import com.learn.githubusercompose.data.remote.dto.toFavoriteEntity
 import com.learn.githubusercompose.data.remote.dto.toFollowerEntity
 import com.learn.githubusercompose.data.remote.dto.toFollowingEntity
 import com.learn.githubusercompose.data.remote.dto.toUserDomains
@@ -44,11 +44,11 @@ class UserRepository @Inject constructor(
         )
     }
 
-    override fun getDetailUser(username: String): Flow<Result<DetailUser>> {
+    override fun getDetailUser(username: String): Flow<Result<DetailUser?>> {
         return networkBoundResource(
             query = {
                 localDataSource.getDetailUser(username).map { entity ->
-                    entity.toDomain()
+                    entity?.toDomain()
                 }
             },
             fetch = {
@@ -56,6 +56,7 @@ class UserRepository @Inject constructor(
             },
             saveFetchResult = { response ->
                 val entity = response.toEntity()
+
                 localDataSource.insertDetailUser(entity)
             },
             shouldFetch = { data ->
@@ -127,26 +128,10 @@ class UserRepository @Inject constructor(
         localDataSource.deleteFavoriteById(id)
     }
 
-    fun getUsersStream(): Flow<List<User>> {
+    override fun getUsersStream(): Flow<List<User>> {
         return localDataSource.getAllUsers().map { entities ->
             entities.toUserDomains()
         }
     }
 }
 
-fun User.toFavoriteEntity(): FavoriteUserEntity {
-    return FavoriteUserEntity(
-        id = id,
-        username = username,
-        avatarUrl = avatarUrl
-    )
-}
-
-fun FavoriteUserEntity.toDomain(): User {
-    return User(
-        id = id,
-        username = username,
-        avatarUrl = avatarUrl,
-        isFavorite = true
-    )
-}

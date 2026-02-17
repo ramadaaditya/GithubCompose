@@ -63,14 +63,7 @@ fun DetailScreen(
         Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        LaunchedEffect(followerState, followingState) {
-            Log.d(
-                "DetailScreen", """
-            followerState = $followerState
-            followingState = $followingState
-        """.trimIndent()
-            )
-        }
+
 
         when (val state = detailState) {
             is UiState.Error -> {

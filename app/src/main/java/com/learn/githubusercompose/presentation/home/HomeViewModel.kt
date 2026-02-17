@@ -9,6 +9,7 @@ import com.learn.githubusercompose.data.repository.TrendingRepository
 import com.learn.githubusercompose.data.repository.UserRepository
 import com.learn.githubusercompose.domain.model.TrendingRepo
 import com.learn.githubusercompose.domain.model.User
+import com.learn.githubusercompose.domain.repository.IUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,7 +27,7 @@ data class HomeUiState(
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val userRepository: UserRepository,
+    private val userRepository: IUserRepository,
     private val trendingRepository: TrendingRepository
 ) : ViewModel() {
     private val _searchState = MutableStateFlow<UiState<Unit>>(Success(Unit))

@@ -67,7 +67,7 @@ fun FavoriteScreen(
                     FavoriteContent(
                         user = state.data,
                         onFavoriteClick = { user ->
-                            viewModel.removeFavorite(user)
+                            viewModel.toggleFavorite(user)
                         },
                         onItemClick = onClick
                     )

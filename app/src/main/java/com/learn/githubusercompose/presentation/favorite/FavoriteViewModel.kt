@@ -3,9 +3,9 @@ package com.learn.githubusercompose.presentation.favorite
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.learn.githubusercompose.core.common.UiState
-import com.learn.githubusercompose.data.repository.UserRepository
 import com.learn.githubusercompose.domain.model.Result
 import com.learn.githubusercompose.domain.model.User
+import com.learn.githubusercompose.domain.repository.IUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val repository: UserRepository
+    private val repository: IUserRepository
 ) : ViewModel() {
 
     val uiState: StateFlow<UiState<List<User>>> =
@@ -35,9 +35,14 @@ class FavoriteViewModel @Inject constructor(
                 initialValue = UiState.Loading
             )
 
-    fun removeFavorite(user: User) {
+
+    fun toggleFavorite(user: User) {
         viewModelScope.launch {
-            repository.deleteFavorite(user.id)
+            if (user.isFavorite) {
+                repository.deleteFavorite(user.id)
+            } else {
+                repository.insertFavorite(user)
+            }
         }
     }
 }

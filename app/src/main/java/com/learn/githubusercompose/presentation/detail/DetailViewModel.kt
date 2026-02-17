@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.learn.githubusercompose.core.common.UiState
 import com.learn.githubusercompose.core.navigation.ScreenRoute
-import com.learn.githubusercompose.data.repository.UserRepository
 import com.learn.githubusercompose.domain.model.DetailUser
 import com.learn.githubusercompose.domain.model.Result
 import com.learn.githubusercompose.domain.model.User
+import com.learn.githubusercompose.domain.repository.IUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +31,7 @@ data class DetailUiState(
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val repository: UserRepository,
+    private val repository: IUserRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val route = savedStateHandle.toRoute<ScreenRoute.DetailUserRoute>()
@@ -62,7 +62,9 @@ class DetailViewModel @Inject constructor(
 
     val uiState: StateFlow<UiState<DetailUiState>> =
         repository.getDetailUser(usernameArg)
-            .map { it.toDetailUiState() }
+            .map {
+                it.toDetailUiState()
+            }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
@@ -94,7 +96,7 @@ class DetailViewModel @Inject constructor(
 }
 
 
-private fun Result<DetailUser>.toDetailUiState(): UiState<DetailUiState> {
+private fun Result<DetailUser?>.toDetailUiState(): UiState<DetailUiState> {
     return when (this) {
         is Result.Loading -> UiState.Loading
         is Result.Error -> UiState.Error(
@@ -102,7 +104,8 @@ private fun Result<DetailUser>.toDetailUiState(): UiState<DetailUiState> {
         )
 
         is Result.Success -> {
-            data.let { user ->
+            val user = data
+            if (user != null) {
                 UiState.Success(
                     DetailUiState(
                         image = user.avatarUrl,
@@ -115,6 +118,8 @@ private fun Result<DetailUser>.toDetailUiState(): UiState<DetailUiState> {
                         username = user.username,
                     )
                 )
+            } else {
+                UiState.Error("User data not found")
             }
         }
     }
@@ -127,7 +132,7 @@ private fun Result<List<User>>.toListUiState(): UiState<List<User>> {
             errorMessage = message ?: "Unknown error occurred"
         )
 
-        is Result.Success -> UiState.Success(data ?: emptyList())
+        is Result.Success -> UiState.Success(data)
     }
 }
 

@@ -1,6 +1,5 @@
 package com.learn.githubusercompose.core.common
 
-import android.util.Log
 import com.learn.githubusercompose.domain.model.ErrorMapper.mapThrowableToErrorType
 import com.learn.githubusercompose.domain.model.Result
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +15,6 @@ inline fun <ResultType, RequestType> networkBoundResource(
     crossinline shouldFetch: (ResultType) -> Boolean = { true }
 ): Flow<Result<ResultType>> = flow {
     emit(Result.Loading)
-    val dbSource = query()
     val dbData = query().first()
 
     if (shouldFetch(dbData)) {
@@ -24,6 +22,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
         try {
             val response = fetch()
             saveFetchResult(response)
+            emitAll(query().map { Result.Success(it) })
         } catch (throwable: Throwable) {
             val isLocalDataEmpty = (dbData as? List<*>)?.isEmpty() == true || dbData == null
 
@@ -38,25 +37,11 @@ inline fun <ResultType, RequestType> networkBoundResource(
                         errorType = errorType
                     )
                 )
-                return@flow
             } else {
-                // Skenario B: Data lokal ADA + Network GAGAL = Silent Fail
-                // Jangan emit Result.Error karena akan menimpa layar data dengan layar error.
-                // Cukup log error-nya, dan biarkan kode lanjut ke bawah untuk emit data lokal.
-                Log.e(
-                    "NetworkBoundResource",
-                    "Fetch failed but displaying cached data: ${throwable.message}"
-                )
-
-                // Opsional: Anda bisa emit Result.Error tipe khusus (misal: "ToastError")
-                // jika ingin UI menampilkan Snackbar "No Internet" tapi list tetap muncul.
-
+                emitAll(query().map { Result.Success(it) })
             }
         }
+    } else {
+        emitAll(query().map { Result.Success(it) })
     }
-
-    emitAll(
-        query().map { Result.Success(it) }
-    )
 }
-

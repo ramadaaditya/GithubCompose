@@ -15,14 +15,12 @@ interface LocalDataSource {
     fun getDetailUser(username: String): Flow<DetailUserEntity?>
     suspend fun insertDetailUser(user: DetailUserEntity)
 
-    // Follows (Transaction logic handled inside implementation)
     fun getFollowing(username: String): Flow<List<FollowingEntity>>
     suspend fun updateFollowing(username: String, list: List<FollowingEntity>)
 
     fun getFollowers(username: String): Flow<List<FollowerEntity>>
     suspend fun updateFollowers(username: String, list: List<FollowerEntity>)
 
-    // Favorites
     fun getAllFavorites(): Flow<List<FavoriteUserEntity>>
     suspend fun insertFavorite(user: FavoriteUserEntity)
     suspend fun deleteFavoriteById(id: Int)
@@ -32,6 +30,4 @@ interface LocalDataSource {
 
     suspend fun replaceUsers(users: List<UserEntity>)
     suspend fun getUserById(id: Int): UserEntity?
-
-
 }
