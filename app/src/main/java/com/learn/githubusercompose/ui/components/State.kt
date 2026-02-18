@@ -41,7 +41,7 @@ fun EmptyState(modifier: Modifier = Modifier) {
 @Preview(showBackground = true, device = PIXEL_5)
 @Composable
 private fun EmptyStatePreview() {
-    GithubUserComposeTheme() {
+    GithubUserComposeTheme {
         EmptyState(Modifier.fillMaxSize())
     }
 }

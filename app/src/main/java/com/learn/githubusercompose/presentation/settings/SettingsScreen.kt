@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.outlined.ColorLens
-import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Token
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -44,22 +42,22 @@ fun SettingsScreen(
             .fillMaxSize()
             .padding(24.dp)
     ) {
-        SettingsItemRow(
-            item = SettingsItem(
-                title = "Theme",
-                icon = Icons.Outlined.ColorLens,
-                onClick =
-                    onGithubTokenClick
-            )
-        )
-
-        SettingsItemRow(
-            item = SettingsItem(
-                title = "Language",
-                icon = Icons.Outlined.Language,
-                onClick = onGithubTokenClick
-            )
-        )
+//        SettingsItemRow(
+//            item = SettingsItem(
+//                title = "Theme",
+//                icon = Icons.Outlined.ColorLens,
+//                onClick =
+//                    onGithubTokenClick
+//            )
+//        )
+//
+//        SettingsItemRow(
+//            item = SettingsItem(
+//                title = "Language",
+//                icon = Icons.Outlined.Language,
+//                onClick = onGithubTokenClick
+//            )
+//        )
 
         SettingsItemRow(
             item = SettingsItem(

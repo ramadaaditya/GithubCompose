@@ -113,7 +113,7 @@ dependencies {
 
     implementation(libs.androidx.security.crypto)
 
-    implementation("androidx.core:core-splashscreen:1.0.0")
+    implementation(libs.androidx.core.splashscreen)
 
 
 }

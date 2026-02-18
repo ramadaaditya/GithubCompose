@@ -51,7 +51,7 @@ fun GithubApp(
                     snackbarHostState.showSnackbar(
                         message = "Tidak ada koneksi internet",
                         withDismissAction = false,
-                        duration = SnackbarDuration.Indefinite
+                        duration = SnackbarDuration.Long
                     )
                 }
             }

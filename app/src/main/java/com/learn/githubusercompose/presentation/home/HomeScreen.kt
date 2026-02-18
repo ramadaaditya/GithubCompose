@@ -69,7 +69,7 @@ fun HomeScreen(
             query = query,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp),
             onQueryChange = { newQuery ->
                 query = newQuery
             },
@@ -141,7 +141,9 @@ fun HomeDashboardContent(
             SectionHeader(
                 title = "Trending Repositories",
                 actionText = "See All",
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 8.dp)
             )
         }
 

@@ -107,7 +107,7 @@ fun SearchUserItem(
 @Preview(showBackground = true)
 @Composable
 private fun SearchUserItemPreview() {
-    GithubUserComposeTheme() {
+    GithubUserComposeTheme{
         SearchUserItem(
             state = User(
                 id = 412312,
@@ -124,8 +124,8 @@ private fun SearchUserItemPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun SearchUserItemPreview_nofavorite() {
-    GithubUserComposeTheme() {
+private fun SearchUserItemPreview_no_favorite() {
+    GithubUserComposeTheme {
         SearchUserItem(
             state = User(
                 id = 412312,

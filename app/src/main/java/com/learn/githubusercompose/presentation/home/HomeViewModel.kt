@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.learn.githubusercompose.core.common.UiState
 import com.learn.githubusercompose.core.common.UiState.Success
-import com.learn.githubusercompose.domain.model.Result
 import com.learn.githubusercompose.data.repository.TrendingRepository
-import com.learn.githubusercompose.data.repository.UserRepository
+import com.learn.githubusercompose.domain.model.Result
 import com.learn.githubusercompose.domain.model.TrendingRepo
 import com.learn.githubusercompose.domain.model.User
 import com.learn.githubusercompose.domain.repository.IUserRepository

@@ -131,7 +131,7 @@ private fun FavoriteScreenPreview() {
             isFavorite = false,
         ),
     )
-    GithubUserComposeTheme() {
+    GithubUserComposeTheme{
         Column(
             modifier = Modifier
                 .fillMaxSize()
