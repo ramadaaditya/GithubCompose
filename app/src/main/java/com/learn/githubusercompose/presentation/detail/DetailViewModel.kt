@@ -34,7 +34,7 @@ class DetailViewModel @Inject constructor(
     private val repository: IUserRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val route = savedStateHandle.toRoute<ScreenRoute.DetailUserRoute>()
+    private val route = savedStateHandle.toRoute<ScreenRoute.DetailRoute>()
     private val usernameArg = route.username
 
     val isFavorite: StateFlow<Boolean> =

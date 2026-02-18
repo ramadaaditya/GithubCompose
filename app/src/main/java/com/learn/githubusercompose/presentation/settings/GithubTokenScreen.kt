@@ -102,15 +102,7 @@ fun GithubTokenScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Tampilkan status token saat ini
-//        if (!savedToken.isNullOrBlank()) {
-//            Text(
-//                text = "Token tersimpan: ${savedToken!!.take(10)}...",
-//                style = MaterialTheme.typography.bodySmall,
-//                color = MaterialTheme.colorScheme.primary
-//            )
-//            Spacer(modifier = Modifier.height(16.dp))
-//        }
+
 
         Button(
             onClick = { viewModel.saveGithubToken(token) },

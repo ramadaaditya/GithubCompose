@@ -7,22 +7,28 @@ sealed class ScreenRoute() {
     @Serializable
     object SplashRoute : ScreenRoute()
 
-    @Serializable
 
+    @Serializable
+    object HomeGraph : ScreenRoute()
+
+    @Serializable
     object HomeRoute : ScreenRoute()
 
     @Serializable
+    data class DetailRoute(val username: String) : ScreenRoute()
 
+    @Serializable
+    object FavoriteGraph : ScreenRoute()
+
+    @Serializable
     object FavoriteRoute : ScreenRoute()
 
-    @Serializable
-    object ProfileRoute : ScreenRoute()
 
     @Serializable
-    data class DetailUserRoute(val username: String) : ScreenRoute()
+    object SettingsGraph : ScreenRoute()
 
     @Serializable
-    object NotificationRoute : ScreenRoute()
+    object GithubTokenRoute : ScreenRoute()
 
     @Serializable
     object SettingsRoute : ScreenRoute()

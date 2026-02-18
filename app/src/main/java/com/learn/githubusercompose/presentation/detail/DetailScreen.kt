@@ -42,13 +42,6 @@ import com.learn.githubusercompose.domain.model.User
 import com.learn.githubusercompose.ui.GithubIcons
 import com.learn.githubusercompose.ui.components.FollowerFollowingTabLayout
 
-fun NavController.navigateToDetail(navOptions: NavOptions? = null) =
-    if (navOptions != null) {
-        navigate(route = ScreenRoute.DetailUserRoute, navOptions)
-    } else {
-        navigate(ScreenRoute.DetailUserRoute)
-    }
-
 
 @Composable
 fun DetailScreen(

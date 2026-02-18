@@ -18,26 +18,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import com.learn.githubusercompose.core.common.UiState
-import com.learn.githubusercompose.core.navigation.ScreenRoute
 import com.learn.githubusercompose.domain.model.User
 import com.learn.githubusercompose.ui.components.SearchUserItem
 import com.learn.githubusercompose.ui.theme.GithubUserComposeTheme
 
-fun NavController.navigateToFavorite(navOptions: NavOptions? = null) =
-    if (navOptions != null) {
-        navigate(route = ScreenRoute.FavoriteRoute, navOptions)
-    } else {
-        navigate(ScreenRoute.FavoriteRoute)
-    }
-
-
 @Composable
 fun FavoriteScreen(
     viewModel: FavoriteViewModel = hiltViewModel(),
-    onClick: (User) -> Unit
+    onClick: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Box(
@@ -82,7 +71,7 @@ fun FavoriteContent(
     user: List<User>,
     modifier: Modifier = Modifier,
     onFavoriteClick: (User) -> Unit,
-    onItemClick: (User) -> Unit
+    onItemClick: (String) -> Unit
 ) {
     LazyColumn(
         contentPadding = PaddingValues(bottom = 24.dp),
@@ -94,7 +83,7 @@ fun FavoriteContent(
         ) { data ->
             SearchUserItem(
                 state = data,
-                onItemClick = { onItemClick(data) },
+                onItemClick = { onItemClick(data.username) },
                 displayFavorite = true,
                 onFavoriteClick = onFavoriteClick
             )

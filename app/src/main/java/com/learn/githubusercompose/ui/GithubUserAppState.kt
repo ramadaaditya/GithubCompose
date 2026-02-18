@@ -14,7 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.learn.githubusercompose.core.navigation.ScreenRoute
 import com.learn.githubusercompose.core.navigation.TopLevelDestination
-import com.learn.githubusercompose.presentation.favorite.navigateToFavorite
+import com.learn.githubusercompose.presentation.favorite.navigation.navigateToFavorite
 import com.learn.githubusercompose.presentation.home.navigation.navigateToHome
 import com.learn.githubusercompose.presentation.settings.navigation.navigateToSettings
 import kotlinx.coroutines.flow.StateFlow

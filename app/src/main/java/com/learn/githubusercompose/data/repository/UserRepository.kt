@@ -1,7 +1,5 @@
 package com.learn.githubusercompose.data.repository
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import com.learn.githubusercompose.core.common.networkBoundResource
 import com.learn.githubusercompose.data.remote.RemoteDataSource
 import com.learn.githubusercompose.data.remote.dto.toDomain
@@ -91,7 +89,6 @@ class UserRepository @Inject constructor(
         return networkBoundResource(
             query = {
                 localDataSource.getFollowers(username).map { entities ->
-                    Log.d(TAG, "getFollowing: ${entities.size}")
                     entities.map { it.toDomain() }
                 }
             },

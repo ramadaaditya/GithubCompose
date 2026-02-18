@@ -3,9 +3,6 @@ package com.learn.githubusercompose.core.navigation
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.learn.githubusercompose.R
-import com.learn.githubusercompose.core.navigation.ScreenRoute.FavoriteRoute
-import com.learn.githubusercompose.core.navigation.ScreenRoute.HomeRoute
-import com.learn.githubusercompose.core.navigation.ScreenRoute.SettingsRoute
 import com.learn.githubusercompose.ui.GithubIcons
 import kotlin.reflect.KClass
 
@@ -22,20 +19,20 @@ enum class TopLevelDestination(
         unselectedIcon = GithubIcons.unselectedHome,
         iconTextId = R.string.home,
         titleTextId = R.string.home,
-        route = HomeRoute::class,
+        route = ScreenRoute.HomeRoute::class,
     ),
     FAVORITE(
         selectedIcon = GithubIcons.selectedFavorite,
         unselectedIcon = GithubIcons.unselectedFavorite,
         iconTextId = R.string.favorite,
         titleTextId = R.string.favorite,
-        route = FavoriteRoute::class,
-        ),
+        route = ScreenRoute.FavoriteRoute::class,
+    ),
     SETTINGS(
         selectedIcon = GithubIcons.selectedSetting,
         unselectedIcon = GithubIcons.unselectedSetting,
         iconTextId = R.string.settings,
         titleTextId = R.string.settings,
-        route = SettingsRoute::class,
+        route = ScreenRoute.SettingsRoute::class,
     ),
 }

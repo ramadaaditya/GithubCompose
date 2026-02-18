@@ -1,12 +1,9 @@
 package com.learn.githubusercompose.ui
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -34,7 +30,6 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun GithubApp(
     appState: GithubAppState,
-    modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val currentDestination = appState.currentDestination
@@ -44,7 +39,6 @@ fun GithubApp(
     CompositionLocalProvider(LocalAppSnackbarHostState provides snackbarHostState) {
         LaunchedEffect(Unit) {
             appState.isConnected.collectLatest { isConnected ->
-                Log.d(TAG, "GithubApp: $isConnected")
 
                 if (isOnSplashScreen) return@collectLatest
                 if (isConnected) {

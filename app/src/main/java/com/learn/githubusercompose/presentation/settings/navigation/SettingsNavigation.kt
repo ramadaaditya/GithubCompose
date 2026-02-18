@@ -8,19 +8,12 @@ import androidx.navigation.compose.navigation
 import com.learn.githubusercompose.core.navigation.ScreenRoute
 import com.learn.githubusercompose.presentation.settings.GithubTokenScreen
 import com.learn.githubusercompose.presentation.settings.SettingsScreen
-import kotlinx.serialization.Serializable
 
-
-@Serializable
-object SettingsGraph
-
-@Serializable
-object GithubTokenRoute
 
 fun NavGraphBuilder.settingsGraph(
     navController: NavController
 ) {
-    navigation<SettingsGraph>(
+    navigation<ScreenRoute.SettingsGraph>(
         startDestination = ScreenRoute.SettingsRoute
     ) {
         composable<ScreenRoute.SettingsRoute> {
@@ -31,7 +24,7 @@ fun NavGraphBuilder.settingsGraph(
             )
         }
 
-        composable<GithubTokenRoute> {
+        composable<ScreenRoute.GithubTokenRoute> {
             GithubTokenScreen()
         }
     }
@@ -39,11 +32,11 @@ fun NavGraphBuilder.settingsGraph(
 
 fun NavController.navigateToSettings(navOptions: NavOptions? = null) =
     if (navOptions != null) {
-        navigate(route = SettingsGraph, navOptions)
+        navigate(route = ScreenRoute.SettingsGraph, navOptions)
     } else {
-        navigate(SettingsGraph)
+        navigate(ScreenRoute.SettingsGraph)
     }
 
 fun NavController.navigateToGithubToken() =
-    navigate(GithubTokenRoute)
+    navigate(ScreenRoute.GithubTokenRoute)
 

@@ -1,7 +1,6 @@
 package com.learn.githubusercompose.core.navigation
 
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -9,8 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.learn.githubusercompose.presentation.SplashScreen
 import com.learn.githubusercompose.presentation.detail.DetailScreen
-import com.learn.githubusercompose.presentation.favorite.FavoriteScreen
-import com.learn.githubusercompose.presentation.home.HomeScreen
+import com.learn.githubusercompose.presentation.favorite.navigation.favoriteGraph
+import com.learn.githubusercompose.presentation.home.navigation.homeGraph
 import com.learn.githubusercompose.presentation.settings.navigation.settingsGraph
 import com.learn.githubusercompose.ui.GithubAppState
 
@@ -24,23 +23,12 @@ fun AppNavHost(
         navController = navController,
         startDestination = ScreenRoute.SplashRoute
     ) {
-        composable<ScreenRoute.HomeRoute>(
-            enterTransition = {
-                fadeIn(animationSpec = tween(durationMillis = 1000))
-            },
-            popEnterTransition = {
-                fadeIn(animationSpec = tween(500))
-            }
-        ) {
-            HomeScreen(
-                navigateToDetail = { username ->
-                    navController.navigate(ScreenRoute.DetailUserRoute(username))
-                },
-                innerPadding = innerPadding
-            )
-        }
 
+        homeGraph(navController = navController, innerPadding = innerPadding)
         settingsGraph(
+            navController = navController
+        )
+        favoriteGraph(
             navController = navController
         )
         composable<ScreenRoute.SplashRoute>(
@@ -56,12 +44,9 @@ fun AppNavHost(
                 }
             )
         }
-        composable<ScreenRoute.FavoriteRoute> {
-            FavoriteScreen(
-                onClick = {}
-            )
-        }
-        composable<ScreenRoute.DetailUserRoute> {
+
+
+        composable<ScreenRoute.DetailRoute> {
             DetailScreen(
                 navigateBack = {
                     navController.navigateUp()
